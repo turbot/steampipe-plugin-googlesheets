@@ -2,7 +2,6 @@ package googlesheets
 
 import (
 	"context"
-	"strings"
 
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
@@ -26,11 +25,13 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	// Initialize tables
 	tables := map[string]*plugin.Table{}
 
-	csvConfig := GetConfig(p.Connection)
+	spreadsheetList, err := getSpreadsheets(ctx, p)
+	if err != nil {
+		return nil, err
+	}
 
-	for _, i := range csvConfig.Ranges {
-		tableCtx := context.WithValue(ctx, "range", i)
-		sheetName := strings.Split(i, "!")[0]
+	for _, sheetName := range spreadsheetList {
+		tableCtx := context.WithValue(ctx, "sheet", sheetName)
 		tables[sheetName] = tableCSV(tableCtx, p)
 	}
 

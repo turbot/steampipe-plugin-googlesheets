@@ -12,7 +12,7 @@ import (
 )
 
 func tableCSV(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	sheetRange := ctx.Value("range").(string)
+	sheetRange := ctx.Value("sheet").(string)
 
 	// Load spreadsheet data
 	spreadsheetData, err := getSpreadsheetData(ctx, p, sheetRange)

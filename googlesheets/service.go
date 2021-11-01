@@ -16,6 +16,48 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
+// Returns all the spreadsheets at the given ID
+func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
+	// have we already created and cached the service?
+	serviceCacheKey := "googlesheets.sheets"
+	if cachedData, ok := d.ConnectionManager.Cache.Get(serviceCacheKey); ok {
+		return cachedData.([]string), nil
+	}
+
+	// To get config arguments from plugin config file
+	opts, err := getSessionConfig(ctx, d)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create service
+	svc, err := sheets.NewService(ctx, opts...)
+	if err != nil {
+		plugin.Logger(ctx).Error("getSpreadsheets", "connection_error", err)
+		return nil, err
+	}
+
+	// Read spreadsheetID from config
+	spreadsheetID := getSpreadsheetID(ctx, d)
+
+	// Get the spreadsheets
+	resp, err := svc.Spreadsheets.Get(spreadsheetID).Context(ctx).Do()
+	if err != nil {
+		return nil, err
+	}
+
+	var spreadsheetList []string
+	for _, sheet := range resp.Sheets {
+		spreadsheetList = append(spreadsheetList, sheet.Properties.Title)
+	}
+
+	// cache the service
+	d.ConnectionManager.Cache.Set(serviceCacheKey, resp)
+
+	return spreadsheetList, nil
+}
+
+// Returns all the cells at the given spreadsheet
 func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string) (*sheets.ValueRange, error) {
 	// have we already created and cached the service?
 	serviceCacheKey := "googlesheets" + sheetRange
