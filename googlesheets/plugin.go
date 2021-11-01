@@ -7,6 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
 )
 
+// Plugin creates this (googlesheets) plugin
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name: "steampipe-plugin-googlesheets",
@@ -25,14 +26,14 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	// Initialize tables
 	tables := map[string]*plugin.Table{}
 
-	spreadsheetList, err := getSpreadsheets(ctx, p)
-	if err != nil {
-		return nil, err
-	}
+	// Get the list of sheets to be retrieved from the spreadsheet
+	googlesheetConfig := GetConfig(p.Connection)
+	spreadsheetList := googlesheetConfig.Sheets
 
+	// Create tablemap for all the available sheets
 	for _, sheetName := range spreadsheetList {
 		tableCtx := context.WithValue(ctx, "sheet", sheetName)
-		tables[sheetName] = tableCSV(tableCtx, p)
+		tables[sheetName] = tableSpreadsheets(tableCtx, p)
 	}
 
 	return tables, nil

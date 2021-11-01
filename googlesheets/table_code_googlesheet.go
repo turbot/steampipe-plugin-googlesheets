@@ -11,11 +11,11 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
 )
 
-func tableCSV(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	sheetRange := ctx.Value("sheet").(string)
+func tableSpreadsheets(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	sheetName := ctx.Value("sheet").(string)
 
 	// Load spreadsheet data
-	spreadsheetData, err := getSpreadsheetData(ctx, p, sheetRange)
+	spreadsheetData, err := getSpreadsheetData(ctx, p, sheetName)
 	if err != nil {
 		panic(err)
 	}
@@ -34,16 +34,16 @@ func tableCSV(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 
 	// Create table definition
 	return &plugin.Table{
-		Name:        sheetRange,
-		Description: fmt.Sprintf("CSV file at %s", sheetRange),
+		Name:        sheetName,
+		Description: fmt.Sprintf("Retrieves data from %s.", sheetName),
 		List: &plugin.ListConfig{
-			Hydrate: listCSVWithPath(spreadsheetData),
+			Hydrate: listSpreadsheetWithPath(spreadsheetData),
 		},
 		Columns: cols,
 	}
 }
 
-func listCSVWithPath(data *sheets.ValueRange) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func listSpreadsheetWithPath(data *sheets.ValueRange) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		// Fetch spreadsheet header
 		var csvHeaders []string

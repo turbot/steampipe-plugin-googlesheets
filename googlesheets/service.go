@@ -16,48 +16,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-// Returns all the spreadsheets at the given ID
-func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
-	// have we already created and cached the service?
-	serviceCacheKey := "googlesheets.sheets"
-	if cachedData, ok := d.ConnectionManager.Cache.Get(serviceCacheKey); ok {
-		return cachedData.([]string), nil
-	}
-
-	// To get config arguments from plugin config file
-	opts, err := getSessionConfig(ctx, d)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create service
-	svc, err := sheets.NewService(ctx, opts...)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheets", "connection_error", err)
-		return nil, err
-	}
-
-	// Read spreadsheetID from config
-	spreadsheetID := getSpreadsheetID(ctx, d)
-
-	// Get the spreadsheets
-	resp, err := svc.Spreadsheets.Get(spreadsheetID).Context(ctx).Do()
-	if err != nil {
-		return nil, err
-	}
-
-	var spreadsheetList []string
-	for _, sheet := range resp.Sheets {
-		spreadsheetList = append(spreadsheetList, sheet.Properties.Title)
-	}
-
-	// cache the service
-	d.ConnectionManager.Cache.Set(serviceCacheKey, resp)
-
-	return spreadsheetList, nil
-}
-
-// Returns all the cells at the given spreadsheet
+// Returns all the cells of a sheet in given spreadsheet
 func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string) (*sheets.ValueRange, error) {
 	// have we already created and cached the service?
 	serviceCacheKey := "googlesheets" + sheetRange
@@ -97,6 +56,12 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 	// Get credential file path, and user to impersonate from config (if mentioned)
 	var credentialContent, tokenPath string
 	googlesheetConfig := GetConfig(d.Connection)
+
+	// Return if no SpreadsheetID provided
+	if *googlesheetConfig.SpreadsheetId == "" {
+		return nil, errors.New("spreadsheet_id must be configured")
+	}
+
 	if googlesheetConfig.Credentials != nil {
 		credentialContent = *googlesheetConfig.Credentials
 	}

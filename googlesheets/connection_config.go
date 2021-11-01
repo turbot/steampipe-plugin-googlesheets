@@ -6,10 +6,11 @@ import (
 )
 
 type csvConfig struct {
-	Credentials           *string `cty:"credentials"`
-	ImpersonatedUserEmail *string `cty:"impersonated_user_email"`
-	TokenPath             *string `cty:"token_path"`
-	SheetId               *string `cty:"sheet_id"`
+	Credentials           *string  `cty:"credentials"`
+	ImpersonatedUserEmail *string  `cty:"impersonated_user_email"`
+	TokenPath             *string  `cty:"token_path"`
+	SpreadsheetId         *string  `cty:"spreadsheet_id"`
+	Sheets                []string `cty:"sheets"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
@@ -22,8 +23,12 @@ var ConfigSchema = map[string]*schema.Attribute{
 	"token_path": {
 		Type: schema.TypeString,
 	},
-	"sheet_id": {
+	"spreadsheet_id": {
 		Type: schema.TypeString,
+	},
+	"sheets": {
+		Type: schema.TypeList,
+		Elem: &schema.Attribute{Type: schema.TypeString},
 	},
 }
 

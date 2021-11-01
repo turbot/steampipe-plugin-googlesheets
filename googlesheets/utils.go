@@ -11,8 +11,8 @@ func getSpreadsheetID(_ context.Context, p *plugin.Plugin) string {
 	googlesheetConfig := GetConfig(p.Connection)
 
 	var spreadsheetID string
-	if googlesheetConfig.SheetId != nil {
-		spreadsheetID = *googlesheetConfig.SheetId
+	if googlesheetConfig.SpreadsheetId != nil {
+		spreadsheetID = *googlesheetConfig.SpreadsheetId
 	}
 
 	return spreadsheetID
