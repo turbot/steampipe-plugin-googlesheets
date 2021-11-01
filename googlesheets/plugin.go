@@ -33,7 +33,10 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	// Create tablemap for all the available sheets
 	for _, sheetName := range spreadsheetList {
 		tableCtx := context.WithValue(ctx, "sheet", sheetName)
-		tables[sheetName] = tableSpreadsheets(tableCtx, p)
+		tableSchema := tableSpreadsheets(tableCtx, p)
+		if tableSchema != nil {
+			tables[sheetName] = tableSpreadsheets(tableCtx, p)
+		}
 	}
 
 	return tables, nil

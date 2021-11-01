@@ -18,12 +18,6 @@ import (
 
 // Returns all the cells of a sheet in given spreadsheet
 func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string) (*sheets.ValueRange, error) {
-	// have we already created and cached the service?
-	serviceCacheKey := "googlesheets" + sheetRange
-	if cachedData, ok := d.ConnectionManager.Cache.Get(serviceCacheKey); ok {
-		return cachedData.(*sheets.ValueRange), nil
-	}
-
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -43,9 +37,6 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string
 	if err != nil {
 		return nil, err
 	}
-
-	// cache the service
-	d.ConnectionManager.Cache.Set(serviceCacheKey, resp)
 
 	return resp, nil
 }
@@ -93,7 +84,7 @@ func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, 
 	// Note: based on https://developers.google.com/admin-sdk/directory/v1/guides/delegation#go
 
 	// have we already created and cached the token?
-	cacheKey := "googleworkspace.token_source"
+	cacheKey := "googlesheets.token_source"
 	if ts, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
 		return ts.(oauth2.TokenSource), nil
 	}
