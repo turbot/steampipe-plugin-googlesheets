@@ -28,10 +28,9 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 
 	// Get the list of sheets to be retrieved from the spreadsheet
 	googlesheetConfig := GetConfig(p.Connection)
-	spreadsheetList := googlesheetConfig.Sheets
 
 	// Create tablemap for all the available sheets
-	for _, sheetName := range spreadsheetList {
+	for _, sheetName := range googlesheetConfig.Sheets {
 		tableCtx := context.WithValue(ctx, "sheet", sheetName)
 		tableSchema := tableSpreadsheets(tableCtx, p)
 		if tableSchema != nil {
