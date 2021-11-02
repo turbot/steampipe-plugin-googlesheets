@@ -34,7 +34,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 		tableCtx := context.WithValue(ctx, "sheet", sheetName)
 		tableSchema := tableSpreadsheets(tableCtx, p)
 		if tableSchema != nil {
-			tables[sheetName] = tableSpreadsheets(tableCtx, p)
+			tables[sheetName] = tableSchema
 		}
 	}
 

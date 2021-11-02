@@ -13,7 +13,7 @@ func tableSpreadsheets(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 	sheetName := ctx.Value("sheet").(string)
 
 	// Load spreadsheet data
-	spreadsheetData, err := getSpreadsheetData(ctx, p, sheetName)
+	spreadsheetData, err := getSpreadsheetData(ctx, p, sheetName + "!1:1")
 	if err != nil {
 		panic(err)
 	}

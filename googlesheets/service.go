@@ -9,6 +9,7 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 
@@ -33,7 +34,7 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string
 
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
-	resp, err := svc.Spreadsheets.Values.Get(spreadsheetID, sheetRange).ValueRenderOption("FORMATTED_VALUE").Context(ctx).Do()
+	resp, err := svc.Spreadsheets.Values.Get(spreadsheetID, sheetRange).ValueRenderOption("FORMATTED_VALUE").Fields(googleapi.Field("values")).Context(ctx).Do()
 	if err != nil {
 		return nil, err
 	}
