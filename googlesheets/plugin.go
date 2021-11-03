@@ -60,6 +60,10 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 		// Create columns
 		cols := []*plugin.Column{}
 		for idx, j := range spreadsheetHeaders {
+			// If no value passed as header use ?column? as column name
+			if len(j) == 0 {
+				j = "?column?"
+			}
 			cols = append(cols, &plugin.Column{Name: j, Type: proto.ColumnType_STRING, Transform: transform.FromField(j), Description: fmt.Sprintf("Field %d.", idx)})
 		}
 

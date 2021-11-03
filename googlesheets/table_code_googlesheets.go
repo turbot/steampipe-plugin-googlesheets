@@ -22,7 +22,12 @@ func listSpreadsheetWithPath(ctx context.Context, p *plugin.Plugin, sheetName st
 		// Fetch spreadsheet header
 		var spreadsheetHeaders []string
 		for _, i := range spreadsheetData.Values[0] {
-			spreadsheetHeaders = append(spreadsheetHeaders, i.(string))
+			header := i.(string)
+			// If no value passed as header use ?column? as column name
+			if len(header) == 0 {
+				header = "?column?"
+			}
+			spreadsheetHeaders = append(spreadsheetHeaders, header)
 		}
 
 		// Remove the header row from the spreadsheet data
