@@ -48,9 +48,9 @@ To get details for a specific table, inspect it by name:
 +------------+------+-------------+
 | column     | type | description |
 +------------+------+-------------+
+| email      | text | Field 2.    |
 | first_name | text | Field 0.    |
 | last_name  | text | Field 1.    |
-| email      | text | Field 2.    |
 +------------+------+-------------+
 ```
 
