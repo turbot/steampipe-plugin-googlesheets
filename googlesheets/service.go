@@ -40,7 +40,7 @@ func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []s
 		sheetRanges = append(sheetRanges, fmt.Sprintf("%s!1:1", i))
 	}
 
-	resp, err := svc.Spreadsheets.Values.BatchGet(spreadsheetID).ValueRenderOption("FORMATTED_VALUE").Ranges(sheetRanges...).Context(ctx).Do()
+	resp, err := svc.Spreadsheets.Values.BatchGet(spreadsheetID).ValueRenderOption("FORMATTED_VALUE").Ranges(sheetRanges...).Fields(googleapi.Field("valueRanges")).Context(ctx).Do()
 	if err != nil {
 		plugin.Logger(ctx).Error("getSpreadsheetHeaders", "spreadsheet_batchget", err)
 		return nil, err
@@ -114,7 +114,7 @@ func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
 	// Get the spreadsheets
-	resp, err := svc.Spreadsheets.Get(spreadsheetID).Context(ctx).Do()
+	resp, err := svc.Spreadsheets.Get(spreadsheetID).Fields(googleapi.Field("sheets(properties.title)")).Context(ctx).Do()
 	if err != nil {
 		return nil, err
 	}
