@@ -1,4 +1,4 @@
-# Table: {googlesheet_sheetname}
+# Table: googlesheets_csv
 
 Query data from Google Sheets. A table is automatically created to represent each
 sheet mentioned in the config using `sheets` in a specific `spreadsheet_id`.
@@ -109,5 +109,5 @@ select
 from
   "My Users"
 where
-  iage > 25
+  iage > 25;
 ```

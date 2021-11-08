@@ -61,3 +61,15 @@ func pathOrContents(poc string) (string, error) {
 	// Return the inline content
 	return poc, nil
 }
+
+func intToLetters(number int) (letters string){
+	number--
+	if firstLetter := number/26; firstLetter >0{
+			letters += intToLetters(firstLetter)
+			letters += string('A' + number%26)
+	} else {
+			letters += string('A' + number)
+	}
+			
+	return 
+}

@@ -1,3 +1,8 @@
+/*
+**TODO**
+* Process data for merge cells
+ */
+
 package googlesheets
 
 import (
@@ -9,32 +14,33 @@ import (
 func listSpreadsheetWithPath(ctx context.Context, p *plugin.Plugin, sheetName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		// Load spreadsheet data
-		spreadsheetData, err := getSpreadsheetData(ctx, p, sheetName)
+		spreadsheetData, err := getSpreadsheetData(ctx, p, []string{sheetName})
 		if err != nil {
 			return nil, err
 		}
 
-		// Return if no rows found
-		if len(spreadsheetData.Values) == 0 {
-			return nil, err
+		// No table
+		if len(spreadsheetData) == 0 {
+			return nil, nil
 		}
+		data := spreadsheetData[0]
 
 		// Fetch spreadsheet header
 		var spreadsheetHeaders []string
-		for _, i := range spreadsheetData.Values[0] {
-			header := i.(string)
-			// If no value passed as header use ?column? as column name
-			if len(header) == 0 {
-				header = "?column?"
+		for idx, i := range data.Values[0] {
+			if len(i.(string)) == 0 {
+				columnName := intToLetters(idx + 1) // since index in for is zero-based
+				spreadsheetHeaders = append(spreadsheetHeaders, columnName)
+			} else {
+				spreadsheetHeaders = append(spreadsheetHeaders, i.(string))
 			}
-			spreadsheetHeaders = append(spreadsheetHeaders, header)
 		}
 
 		// Remove the header row from the spreadsheet data
-		data := append(spreadsheetData.Values[:0], spreadsheetData.Values[0+1:]...)
+		cellData := append(data.Values[:0], data.Values[0+1:]...)
 
 		// Iterate the spreadsheet rows
-		for _, i := range data {
+		for _, i := range cellData {
 			row := map[string]string{}
 			for idx, j := range i {
 				row[spreadsheetHeaders[idx]] = j.(string)

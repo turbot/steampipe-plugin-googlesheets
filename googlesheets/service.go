@@ -3,8 +3,6 @@ package googlesheets
 import (
 	"context"
 	"errors"
-	"fmt"
-	"strings"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -16,59 +14,7 @@ import (
 )
 
 // Returns all the cells of a sheet in given spreadsheet
-func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []string) (map[string][]string, error) {
-	// To get config arguments from plugin config file
-	opts, err := getSessionConfig(ctx, d)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create service
-	svc, err := sheets.NewService(ctx, opts...)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheetHeaders", "connection_error", err)
-		return nil, err
-	}
-	spreadsheetID := getSpreadsheetID(ctx, d)
-
-	// Create table range to get the first row of every sheet
-	var sheetRanges []string
-	for _, i := range sheetNames {
-		sheetRanges = append(sheetRanges, fmt.Sprintf("%s!1:1", i))
-	}
-
-	resp, err := svc.Spreadsheets.Values.BatchGet(spreadsheetID).ValueRenderOption("FORMATTED_VALUE").Ranges(sheetRanges...).Fields(googleapi.Field("valueRanges")).Context(ctx).Do()
-	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheetHeaders", "spreadsheet_batchget", err)
-		return nil, err
-	}
-
-	// Create map of headers along with corresponding sheet name
-	spreadsheetHeadersMap := make(map[string][]string)
-	for _, i := range resp.ValueRanges {
-		if len(i.Values) == 0 {
-			continue
-		}
-		var spreadsheetHeaders []string
-		str := strings.Split(i.Range, "!")[0]
-
-		// API wraps the range inside quotes if sheet name contains whitespaces
-		// For example, if the sheet name is 'Sheet 1', then range comes as "'Sheet 1'!A1:Z1"
-		if len(str) > 0 && str[0] == '\'' {
-			str = str[1 : len(str)-1]
-		}
-
-		for _, i := range i.Values[0] {
-			spreadsheetHeaders = append(spreadsheetHeaders, i.(string))
-		}
-		spreadsheetHeadersMap[str] = spreadsheetHeaders
-	}
-
-	return spreadsheetHeadersMap, nil
-}
-
-// Returns all the cells of a sheet in given spreadsheet
-func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string) (*sheets.ValueRange, error) {
+func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.ValueRange, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -84,12 +30,12 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetRange string
 
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
-	resp, err := svc.Spreadsheets.Values.Get(spreadsheetID, sheetRange).ValueRenderOption("FORMATTED_VALUE").Fields(googleapi.Field("values")).Context(ctx).Do()
+	resp, err := svc.Spreadsheets.Values.BatchGet(spreadsheetID).ValueRenderOption("FORMATTED_VALUE").Ranges(sheetNames...).Fields(googleapi.Field("valueRanges")).Context(ctx).Do()
 	if err != nil {
 		return nil, err
 	}
 
-	return resp, nil
+	return resp.ValueRanges, nil
 }
 
 // Returns all the spreadsheets at the given ID
