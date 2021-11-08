@@ -62,14 +62,16 @@ func pathOrContents(poc string) (string, error) {
 	return poc, nil
 }
 
-func intToLetters(number int) (letters string){
-	number--
-	if firstLetter := number/26; firstLetter >0{
-			letters += intToLetters(firstLetter)
-			letters += string('A' + number%26)
+// Convert column index number to corresponding letter
+// For example, 1:A, 2:B, 27:AA, 55:BC
+func intToLetters(colIndex int) (letter string) {
+	colIndex--
+	if firstLetter := colIndex / 26; firstLetter > 0 {
+		letter += intToLetters(firstLetter)
+		letter += string('A' + colIndex%26)
 	} else {
-			letters += string('A' + number)
+		letter += string('A' + colIndex)
 	}
-			
-	return 
+
+	return
 }
