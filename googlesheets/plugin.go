@@ -114,6 +114,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	}
 
 	// Add other static tables
+	tables["googlesheets_cell"] = tableGooglesheetsCell(ctx)
 	tables["googlesheets_sheet"] = tableGooglesheetsSheet(ctx)
 
 	return tables, nil
