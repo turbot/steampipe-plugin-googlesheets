@@ -19,6 +19,7 @@ type cellInfo = struct {
 	Value       string
 	Formula     string
 	Note        string
+	Hyperlink   string
 	SheetName   string
 }
 
@@ -33,6 +34,14 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 			KeyColumns: []*plugin.KeyColumn{
 				{
 					Name:    "sheet_name",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "column_name",
+					Require: plugin.Optional,
+				},
+				{
+					Name:    "row_name",
 					Require: plugin.Optional,
 				},
 			},
@@ -74,6 +83,11 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
+				Name:        "hyperlink",
+				Description: "A hyperlink this cell points to, if any. If the cell contains multiple hyperlinks, this field will be empty.",
+				Type:        proto.ColumnType_STRING,
+			},
+			{
 				Name:        "spreadsheet_id",
 				Description: "The ID of the spreadsheet.",
 				Type:        proto.ColumnType_STRING,
@@ -103,11 +117,17 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	// Get the ID of the spreadsheet
 	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
 
-	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData),merges)"))
+	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData,startColumn,startRow),merges)"))
 
 	// Additional filters
-	if d.KeyColumnQuals["sheet_name"] != nil {
-		resp.Ranges(d.KeyColumnQuals["sheet_name"].GetStringValue())
+	quals := d.KeyColumnQuals
+	if quals["sheet_name"] != nil {
+		if quals["row_name"] != nil && quals["column_name"] != nil {
+			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["column_name"].GetStringValue(), quals["row_name"].GetInt64Value())
+			resp.Ranges(ranges)
+		} else {
+			resp.Ranges(quals["sheet_name"].GetStringValue())
+		}
 	}
 	data, err := resp.Context(ctx).Do()
 	if err != nil {
@@ -118,39 +138,18 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 		for _, sheet := range data.Sheets {
 			if sheet.Data != nil {
 				for _, i := range sheet.Data {
-					for row_count, row := range i.RowData {
-						for col_count, value := range row.Values {
-							mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(row_count+1), int64(col_count+1))
-							if mergeRow != nil && mergeColumn != nil {
+					for rowCount, row := range i.RowData {
+						rowCount = rowCount + int(i.StartRow)
+						for colCount, value := range row.Values {
+							colCount = colCount + int(i.StartColumn)
+							mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(rowCount+1), int64(colCount+1))
+							if mergeRow != nil && mergeColumn != nil { // Merge cell
 								parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
-								var formulaValue string
-								if parentData.UserEnteredValue.FormulaValue != nil {
-									formulaValue = *parentData.UserEnteredValue.FormulaValue
-								}
-								d.StreamListItem(ctx, cellInfo{
-									SheetName:   sheet.Properties.Title,
-									ColumnName:  intToLetters(col_count + 1),
-									RowName:     row_count + 1,
-									CellAddress: fmt.Sprintf("%s%d", intToLetters(col_count+1), row_count+1),
-									Value:       parentData.FormattedValue,
-									Formula:     formulaValue,
-									Note:        value.Note,
-								})
-							}
-							if value.UserEnteredValue != nil {
-								var formulaValue string
-								if value.UserEnteredValue.FormulaValue != nil {
-									formulaValue = *value.UserEnteredValue.FormulaValue
-								}
-								d.StreamListItem(ctx, cellInfo{
-									SheetName:   sheet.Properties.Title,
-									ColumnName:  intToLetters(col_count + 1),
-									RowName:     row_count + 1,
-									CellAddress: fmt.Sprintf("%s%d", intToLetters(col_count+1), row_count+1),
-									Value:       value.FormattedValue,
-									Formula:     formulaValue,
-									Note:        value.Note,
-								})
+								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, parentData)
+								d.StreamListItem(ctx, rowInfo)
+							} else if value.FormattedValue != "" {
+								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
+								d.StreamListItem(ctx, rowInfo)
 							}
 						}
 					}
@@ -188,4 +187,23 @@ func findMergeCells(mergeInfo []*sheets.GridRange, currentRow int64, currentColu
 		}
 	}
 	return nil, nil, nil, nil
+}
+
+func getCellInfo(sheetName string, rowCount int, colCount int, data *sheets.CellData) cellInfo {
+	var formulaValue string
+	if data.UserEnteredValue.FormulaValue != nil {
+		formulaValue = *data.UserEnteredValue.FormulaValue
+	}
+	result := cellInfo{
+		SheetName:   sheetName,
+		ColumnName:  intToLetters(colCount + 1),
+		RowName:     rowCount + 1,
+		CellAddress: fmt.Sprintf("%s%d", intToLetters(colCount+1), rowCount+1),
+		Value:       data.FormattedValue,
+		Formula:     formulaValue,
+		Note:        data.Note,
+		Hyperlink:   data.Hyperlink,
+	}
+
+	return result
 }

@@ -12,47 +12,40 @@ import (
 )
 
 func listSpreadsheetWithPath(ctx context.Context, p *plugin.Plugin, sheetName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-		// Load spreadsheet data
+	return func(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+		// Get spreadsheet details
 		spreadsheetData, err := getSpreadsheetData(ctx, p, []string{sheetName})
 		if err != nil {
 			return nil, err
 		}
 
-		// No table
-		if len(spreadsheetData) == 0 {
-			return nil, nil
+		spreadsheetHeadersMap, err := getSpreadsheetHeadersMap(ctx, p, []string{sheetName})
+		if err != nil {
+			return nil, err
 		}
-		data := spreadsheetData[0]
+		spreadsheetHeaders := spreadsheetHeadersMap[sheetName]
 
-		// Fetch spreadsheet header
-		var spreadsheetHeaders []string
-		for idx, i := range data.Values[0] {
-			if len(i.(string)) == 0 {
-				columnName := intToLetters(idx + 1) // since index in for is zero-based
-				spreadsheetHeaders = append(spreadsheetHeaders, columnName)
-			} else {
-				spreadsheetHeaders = append(spreadsheetHeaders, i.(string))
+		for _, sheet := range spreadsheetData {
+			for _, i := range sheet.Data {
+				for row_count, row := range i.RowData {
+					// Skip first row, or header
+					if row_count == 0 {
+						continue
+					}
+					rowData := map[string]string{}
+					for col_count, value := range row.Values {
+						mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(row_count+1), int64(col_count+1))
+						if mergeRow != nil && mergeColumn != nil {
+							parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
+							rowData[spreadsheetHeaders[col_count]] = parentData.FormattedValue
+						} else {
+							rowData[spreadsheetHeaders[col_count]] = value.FormattedValue
+						}
+					}
+					d.StreamListItem(ctx, rowData)
+				}
 			}
 		}
-
-		// Remove the header row from the spreadsheet data
-		cellData := append(data.Values[:0], data.Values[0+1:]...)
-
-		// Iterate the spreadsheet rows
-		for _, i := range cellData {
-			row := map[string]string{}
-			for idx, j := range i {
-				row[spreadsheetHeaders[idx]] = j.(string)
-			}
-			d.StreamListItem(ctx, row)
-
-			// Context can be cancelled due to manual cancellation or the limit has been hit
-			if d.QueryStatus.RowsRemaining(ctx) == 0 {
-				return nil, nil
-			}
-		}
-
 		return nil, nil
 	}
 }

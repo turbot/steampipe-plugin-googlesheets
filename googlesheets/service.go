@@ -3,6 +3,7 @@ package googlesheets
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -10,11 +11,18 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 
+	"github.com/turbot/go-kit/helpers"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
 // Returns all the cells of a sheet in given spreadsheet
-func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.ValueRange, error) {
+func getSpreadsheetHeadersMap(ctx context.Context, d *plugin.Plugin, sheetNames []string) (map[string][]string, error) {
+	// have we already created and cached the token?
+	cacheKey := "googlesheets.headers_map"
+	if ts, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+		return ts.(map[string][]string), nil
+	}
+
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -30,16 +38,50 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []stri
 
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
-	resp, err := svc.Spreadsheets.Values.BatchGet(spreadsheetID).ValueRenderOption("FORMATTED_VALUE").Ranges(sheetNames...).Fields(googleapi.Field("valueRanges")).Context(ctx).Do()
+	resp, err := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Ranges(sheetNames...).Fields(googleapi.Field("sheets(properties.title,data(rowData),merges)")).Context(ctx).Do()
 	if err != nil {
 		return nil, err
 	}
 
-	return resp.ValueRanges, nil
+	headersMap := map[string][]string{}
+	for _, data := range resp.Sheets {
+		if len(data.Data) == 0 || len(data.Data[0].RowData) == 0 || len(data.Data[0].RowData[0].Values) == 0 || data.Data[0].RowData[0].Values[0].UserEnteredValue == nil {
+			continue
+		}
+
+		var spreadsheetHeaders []string
+		for _, i := range data.Data {
+			rowData := i.RowData[0].Values
+
+			for col_count, value := range rowData {
+				mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(data.Merges, int64(1), int64(col_count+1))
+				if mergeRow != nil && mergeColumn != nil {
+					parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
+					spreadsheetHeaders[len(spreadsheetHeaders)-1] = fmt.Sprintf("%s [%s]", spreadsheetHeaders[len(spreadsheetHeaders)-1], intToLetters(col_count))
+					spreadsheetHeaders = append(spreadsheetHeaders, fmt.Sprintf("%s [%s]", parentData.FormattedValue, intToLetters(col_count+1)))
+				} else if value.FormattedValue == "" {
+					columnName := intToLetters(col_count + 1) // since index in for is zero-based
+					spreadsheetHeaders = append(spreadsheetHeaders, columnName)
+				} else {
+					if helpers.StringSliceContains(spreadsheetHeaders, value.FormattedValue) {
+						spreadsheetHeaders = append(spreadsheetHeaders, fmt.Sprintf("%s [%s]", value.FormattedValue, intToLetters(6)))
+					} else {
+						spreadsheetHeaders = append(spreadsheetHeaders, value.FormattedValue)
+					}
+				}
+			}
+		}
+		headersMap[data.Properties.Title] = spreadsheetHeaders
+	}
+
+	// cache the token source
+	d.ConnectionManager.Cache.Set(cacheKey, headersMap)
+
+	return headersMap, nil
 }
 
-// Returns all the spreadsheets at the given ID
-func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
+// Returns all the cells of a sheet in given spreadsheet
+func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.Sheet, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -49,25 +91,22 @@ func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheets", "connection_error", err)
+		plugin.Logger(ctx).Error("getSpreadsheetData", "connection_error", err)
 		return nil, err
 	}
 
-	// Read spreadsheetID from config
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
-	// Get the spreadsheets
-	resp, err := svc.Spreadsheets.Get(spreadsheetID).Fields(googleapi.Field("sheets(properties.title)")).Context(ctx).Do()
+	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData),merges)"))
+	if len(sheetNames) > 0 {
+		resp.Ranges(sheetNames...)
+	}
+	data, err := resp.Context(ctx).Do()
 	if err != nil {
 		return nil, err
 	}
 
-	var spreadsheetList []string
-	for _, sheet := range resp.Sheets {
-		spreadsheetList = append(spreadsheetList, sheet.Properties.Title)
-	}
-
-	return spreadsheetList, nil
+	return data.Sheets, nil
 }
 
 func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOption, error) {
