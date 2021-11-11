@@ -53,7 +53,7 @@ steampipe plugin install googlesheets
 
 | Item        | Description |
 | :---------- | :---------- |
-| Credentials | 1. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/spreadsheets.readonly` OAuth 2.0 scope, so that the service account can access Google Sheet service.<br />2. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client). |
+| Credentials | 1. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/drive.readonly` OAuth 2.0 scope, so that the service account can access Google Sheet service.<br />2. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client). |
 | Radius      | Each connection represents a single Google Spreadsheet. |
 | Resolution  | 1. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config.<br />2. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />3. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`). |
 
@@ -104,7 +104,7 @@ You can use client secret credentials to protect the user's data by only grantin
   ```sh
   gcloud auth application-default login \
     --client-id-file=client_secret.json \
-    --scopes="https://www.googleapis.com/auth/spreadsheets.readonly"
+    --scopes="https://www.googleapis.com/auth/drive.readonly"
   ```
 
 - In the browser window that just opened, authenticate as the user you would like to make the API calls through.

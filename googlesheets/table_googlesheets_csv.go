@@ -18,12 +18,7 @@ func listSpreadsheetWithPath(ctx context.Context, p *plugin.Plugin, sheetName st
 		if err != nil {
 			return nil, err
 		}
-
-		spreadsheetHeadersMap, err := getSpreadsheetHeadersMap(ctx, p, []string{sheetName})
-		if err != nil {
-			return nil, err
-		}
-		spreadsheetHeaders := spreadsheetHeadersMap[sheetName]
+		spreadsheetHeaders := googleSpreadsheetHeadersMap[sheetName]
 
 		for _, sheet := range spreadsheetData {
 			for _, i := range sheet.Data {

@@ -75,3 +75,14 @@ func intToLetters(colIndex int) (letter string) {
 
 	return
 }
+
+// Return the maximum length of a column in a sheet
+func getMaxLength(values [][]interface{}) int {
+	var maxColsLength int
+	for _, value := range values {
+		if len(value) > maxColsLength {
+			maxColsLength = len(value)
+		}
+	}
+	return maxColsLength
+}
