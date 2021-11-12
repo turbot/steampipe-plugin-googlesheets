@@ -18,6 +18,12 @@ func tableGooglesheetsSheet(_ context.Context) *plugin.Table {
 		Description: "Retrieve the sheet in a given spreadsheet.",
 		List: &plugin.ListConfig{
 			Hydrate: listGooglesheetSheets,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "title",
+					Require: plugin.Optional,
+				},
+			},
 		},
 		Columns: []*plugin.Column{
 			{
@@ -169,7 +175,14 @@ func listGooglesheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 
 	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
 
-	resp, err := svc.Spreadsheets.Get(spreadsheetID).Context(ctx).Do()
+	req := svc.Spreadsheets.Get(spreadsheetID)
+
+	// Additional filters
+	if d.KeyColumnQuals["title"] != nil {
+		req.Ranges(d.KeyColumnQuals["title"].GetStringValue())
+	}
+
+	resp, err := req.Context(ctx).Do()
 	if err != nil {
 		return nil, err
 	}
