@@ -37,6 +37,10 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 					Require: plugin.Optional,
 				},
 				{
+					Name:    "ranges",
+					Require: plugin.Optional,
+				},
+				{
 					Name:    "column_name",
 					Require: plugin.Optional,
 				},
@@ -88,6 +92,12 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
+				Name:        "ranges",
+				Description: "The ranges to retrieve from the spreadsheet.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("ranges"),
+			},
+			{
 				Name:        "spreadsheet_id",
 				Description: "The ID of the spreadsheet.",
 				Type:        proto.ColumnType_STRING,
@@ -122,7 +132,10 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	// Additional filters
 	quals := d.KeyColumnQuals
 	if quals["sheet_name"] != nil {
-		if quals["row_name"] != nil && quals["column_name"] != nil {
+		if quals["ranges"] != nil {
+			ranges := fmt.Sprintf("%s!%s", quals["sheet_name"].GetStringValue(), quals["ranges"].GetStringValue())
+			resp.Ranges(ranges)
+		} else if quals["row_name"] != nil && quals["column_name"] != nil {
 			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["column_name"].GetStringValue(), quals["row_name"].GetInt64Value())
 			resp.Ranges(ranges)
 		} else {
