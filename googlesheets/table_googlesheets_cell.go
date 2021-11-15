@@ -147,6 +147,9 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 								parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
 								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, parentData)
 								d.StreamListItem(ctx, rowInfo)
+							} else if value.UserEnteredValue != nil && value.UserEnteredValue.FormulaValue != nil { // Image in cell
+								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
+								d.StreamListItem(ctx, rowInfo)
 							} else if value.FormattedValue != "" {
 								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
 								d.StreamListItem(ctx, rowInfo)
