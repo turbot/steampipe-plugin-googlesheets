@@ -27,6 +27,8 @@ created from and all column values are returned as text data type.
 
 If the actual sheet is missing some values in row 1 (header row), the table will assume `A, B, AA` as column name.
 
+Check out [Steampipe for Google Sheet Example](https://docs.google.com/spreadsheets/d/13AdC3MKVg2zQj2OJAzQ3NN6HqaPuYhN3Aagr7OmRn9c/edit#gid=354856876) spreadsheet for more examples.
+
 **NOTE:**
 
 - This table always checks for data in `A1` cell in the actual sheet to assume it as a CSV; otherwise plugin will skip that sheet.
@@ -59,21 +61,6 @@ To get details for a specific table, inspect it by name:
 | last_name  | text | Field 1.    |
 +------------+------+-------------+
 ```
-
-### sheet with some empty cell in first row
-
-Assuming your connection has a sheet with some missing values in row 1 (header row), For example:
-
-**_Actual Sheet_**
-| Col 1 | Col 2 | | | Col 3 |
-| - | -| - | -| - |
-| data 1 | data 2 | data 3 | data 4 | data 5|
-
-The CSV table will render as following
-**_Table Output_**
-| Col 1 | Col 2 | C | D | Col 3 |
-| - | - | - | - | - |
-| data 1 | data 2 | data 3 | data 4 | data 5|
 
 ### Query a sheet
 

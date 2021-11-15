@@ -41,7 +41,7 @@ func tableGooglesheetsSpreadsheet(_ context.Context) *plugin.Table {
 			},
 			{
 				Name:        "copy_requires_writer_permission",
-				Description: "Indicates whether the options to copy, print, or download this spreadsheet , should be disabled for readers and commenters.",
+				Description: "Indicates whether the options to copy, print, or download this spreadsheet, should be disabled for readers and commenters.",
 				Type:        proto.ColumnType_BOOL,
 			},
 			{
