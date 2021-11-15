@@ -27,13 +27,6 @@ func tableGooglesheetsSheet(_ context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{
-				Name:        "spreadsheet_id",
-				Description: "The ID of the spreadsheet.",
-				Type:        proto.ColumnType_STRING,
-				Hydrate:     spreadsheetID,
-				Transform:   transform.FromValue(),
-			},
-			{
 				Name:        "title",
 				Description: "The name of the sheet.",
 				Type:        proto.ColumnType_STRING,
@@ -152,6 +145,13 @@ func tableGooglesheetsSheet(_ context.Context) *plugin.Table {
 				Description: "The color of the tab in the UI.",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromField("Properties.TabColorStyle"),
+			},
+			{
+				Name:        "spreadsheet_id",
+				Description: "The ID of the spreadsheet.",
+				Type:        proto.ColumnType_STRING,
+				Hydrate:     spreadsheetID,
+				Transform:   transform.FromValue(),
 			},
 		},
 	}

@@ -110,14 +110,16 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 					}
 				}
 
-				// Case table:
-				// | Col A |       |       |
-				// | ----- | ----- | ----- |
-				// | val A | val B | val C |
-				// Expected table output
-				// | Col A | B     | C     |
-				// | ----- | ----- | ----- |
-				// | val A | val B | val C |
+				/*
+				* Case:
+				  | Col A |       |       |
+				  | ----- | ----- | ----- |
+				  | val A | val B | val C |
+				* Expected output
+				  | Col A | B     | C     |
+				  | ----- | ----- | ----- |
+				  | val A | val B | val C |
+				*/
 				if len(data.Values[0]) < maxColsLength {
 					for i := len(data.Values[0]); i < maxColsLength; i++ {
 						columnName := intToLetters(i + 1)

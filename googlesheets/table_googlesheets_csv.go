@@ -1,8 +1,3 @@
-/*
-**TODO**
-* Process data for merge cells
- */
-
 package googlesheets
 
 import (

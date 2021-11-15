@@ -13,7 +13,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-// Returns all the cells of a sheet in given spreadsheet
+// Returns headers of a sheet in given spreadsheet
 func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.ValueRange, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
@@ -38,7 +38,7 @@ func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []s
 	return resp.ValueRanges, nil
 }
 
-// Returns all the spreadsheets at the given ID
+// Returns all the sheets in a given spreadsheets
 func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
@@ -70,7 +70,7 @@ func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
 	return spreadsheetList, nil
 }
 
-// Returns all the cells of a sheet in given spreadsheet
+// Returns all the merge cells in a given sheet
 func getMergeCells(ctx context.Context, d *plugin.Plugin, sheetName string) ([]*sheets.GridRange, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
@@ -116,7 +116,7 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []stri
 
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
-	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData),merges)"))
+	resp := svc.Spreadsheets.Get(spreadsheetID).Fields(googleapi.Field("sheets(properties.title,data(rowData(values(userEnteredValue,effectiveValue,formattedValue,hyperlink,note))),merges)"))
 	if len(sheetNames) > 0 {
 		resp.Ranges(sheetNames...)
 	}
