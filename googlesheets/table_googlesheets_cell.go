@@ -157,9 +157,11 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 							colCount = colCount + int(i.StartColumn)
 							mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(rowCount+1), int64(colCount+1))
 							if mergeRow != nil && mergeColumn != nil { // Merge cell
-								parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
-								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, parentData)
-								d.StreamListItem(ctx, rowInfo)
+								if len(i.RowData) > int(*parentRow) && i.RowData[*parentRow-1] != nil && i.RowData[*parentRow-1].Values[*parentColumn-1] != nil {
+									parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
+									rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, parentData)
+									d.StreamListItem(ctx, rowInfo)
+								}
 							} else if value.UserEnteredValue != nil && value.UserEnteredValue.FormulaValue != nil { // Image in cell
 								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
 								d.StreamListItem(ctx, rowInfo)
@@ -207,7 +209,7 @@ func findMergeCells(mergeInfo []*sheets.GridRange, currentRow int64, currentColu
 
 func getCellInfo(sheetName string, rowCount int, colCount int, data *sheets.CellData) cellInfo {
 	var formulaValue string
-	if data.UserEnteredValue.FormulaValue != nil {
+	if data.UserEnteredValue != nil && data.UserEnteredValue.FormulaValue != nil {
 		formulaValue = *data.UserEnteredValue.FormulaValue
 	}
 	result := cellInfo{

@@ -17,6 +17,21 @@ from
   googlesheets_sheet;
 ```
 
+### Get information about a specific sheet
+
+```sql
+select
+  title,
+  sheet_id,
+  spreadsheet_id,
+  hidden,
+  sheet_type
+from
+  googlesheets_sheet
+where
+  title = 'My Users';
+```
+
 ### List all hidden sheets
 
 ```sql

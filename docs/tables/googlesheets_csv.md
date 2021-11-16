@@ -39,7 +39,7 @@ Check out [Steampipe for Google Sheet Example](https://docs.google.com/spreadshe
 
 Assuming your connection is called `googlesheets` (the default), list all tables with:
 
-```sql
+```shell
 .inspect googlesheets
 +-------------+----------------------------------+
 | table       | description                      |
@@ -51,7 +51,7 @@ Assuming your connection is called `googlesheets` (the default), list all tables
 
 To get details for a specific table, inspect it by name:
 
-```sql
+```shell
 .inspect "My Users"
 +------------+------+-------------+
 | column     | type | description |

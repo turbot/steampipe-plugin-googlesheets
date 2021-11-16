@@ -18,6 +18,24 @@ where
   and ranges = 'B1:C2';
 ```
 
+### Get information about a specific cell
+
+```sql
+select
+  sheet_name,
+  cell_address,
+  value,
+  formula,
+  hyperlink,
+  note
+from
+  googlesheets_cell
+where
+  sheet_name = 'My Users'
+  and column_name = 'B'
+  and row_name = 5;
+```
+
 ### List all cells with hyperlink information
 
 ```sql
