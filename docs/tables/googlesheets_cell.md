@@ -14,26 +14,46 @@ select
 from
   googlesheets_cell
 where
-  sheet_name = 'My Users'
-  and ranges = 'B1:C2';
+  ranges = 'My Users!B1:C2';
 ```
 
-### Get information about a specific cell
+### List all cells in a column
 
 ```sql
 select
   sheet_name,
   cell_address,
-  value,
-  formula,
-  hyperlink,
-  note
+  value
 from
   googlesheets_cell
 where
-  sheet_name = 'My Users'
-  and column_name = 'B'
-  and row_name = 5;
+  ranges = 'My Users!A:A';
+```
+
+### List all cells in a row
+
+```sql
+select
+  sheet_name,
+  cell_address,
+  value
+from
+  googlesheets_cell
+where
+  ranges = 'My Users!1:1';
+```
+
+### Get a specific cell
+
+```sql
+select
+  sheet_name,
+  cell_address,
+  value
+from
+  googlesheets_cell
+where
+  ranges = 'My Users!A2';
 ```
 
 ### List all cells with hyperlink information

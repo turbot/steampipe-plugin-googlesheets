@@ -13,8 +13,8 @@ import (
 )
 
 type cellInfo = struct {
-	ColumnName  string
-	RowName     int
+	Column      string
+	Row         int
 	CellAddress string
 	Value       string
 	Formula     string
@@ -41,11 +41,11 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 					Require: plugin.Optional,
 				},
 				{
-					Name:    "column_name",
+					Name:    "col",
 					Require: plugin.Optional,
 				},
 				{
-					Name:    "row_name",
+					Name:    "row",
 					Require: plugin.Optional,
 				},
 			},
@@ -57,12 +57,13 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
-				Name:        "column_name",
+				Name:        "col",
 				Description: "The ID of the column.",
 				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Column"),
 			},
 			{
-				Name:        "row_name",
+				Name:        "row",
 				Description: "The index of the row.",
 				Type:        proto.ColumnType_INT,
 			},
@@ -131,17 +132,17 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 
 	// Additional filters
 	quals := d.KeyColumnQuals
-	if quals["sheet_name"] != nil {
-		if quals["ranges"] != nil {
-			ranges := fmt.Sprintf("%s!%s", quals["sheet_name"].GetStringValue(), quals["ranges"].GetStringValue())
-			resp.Ranges(ranges)
-		} else if quals["row_name"] != nil && quals["column_name"] != nil {
-			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["column_name"].GetStringValue(), quals["row_name"].GetInt64Value())
+	if quals["ranges"] != nil {
+		resp.Ranges(quals["ranges"].GetStringValue())
+	} else if quals["sheet_name"] != nil {
+		if quals["row"] != nil && quals["col"] != nil {
+			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["col"].GetStringValue(), quals["row"].GetInt64Value())
 			resp.Ranges(ranges)
 		} else {
 			resp.Ranges(quals["sheet_name"].GetStringValue())
 		}
 	}
+
 	data, err := resp.Context(ctx).Do()
 	if err != nil {
 		return nil, err
@@ -214,8 +215,8 @@ func getCellInfo(sheetName string, rowCount int, colCount int, data *sheets.Cell
 	}
 	result := cellInfo{
 		SheetName:   sheetName,
-		ColumnName:  intToLetters(colCount + 1),
-		RowName:     rowCount + 1,
+		Column:      intToLetters(colCount + 1),
+		Row:         rowCount + 1,
 		CellAddress: fmt.Sprintf("%s%d", intToLetters(colCount+1), rowCount+1),
 		Value:       data.FormattedValue,
 		Formula:     formulaValue,
