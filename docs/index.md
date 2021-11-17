@@ -20,19 +20,23 @@ For example:
 
 ```sql
 select
-  first_name,
-  last_name
+  "Full Title",
+  "Title"
 from
-  "My Users";
+  "AWS Resource Types"
+where
+  "Tags Model" = 'NO_TAGS'
+limit 3;
 ```
 
 ```sh
-+------------+-----------+
-| first_name | last_name |
-+------------+-----------+
-| Michael    | Scott     |
-| Dwight     | Schrute   |
-+------------+-----------+
++--------------------------+--------------------+
+| Full Title               | Title              |
++--------------------------+--------------------+
+| AWS > AppFlow            | AppFlow            |
+| AWS > Artifact           | Artifact           |
+| AWS > Elastic Transcoder | Elastic Transcoder |
++--------------------------+--------------------+
 ```
 
 ## Documentation
@@ -73,8 +77,8 @@ connection "googlesheets" {
   # 2. To authenticate using OAuth 2.0, specify a client secret file
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
-  spreadsheet_id = "1kSJ8giCfSndHQCoVaOCVk1CBAXHelloxmEtda5gvdX0"
-  sheets         = ["My Users", "My Products"]
+  spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
+  sheets         = ["Students", "Marks"]
 }
 ```
 

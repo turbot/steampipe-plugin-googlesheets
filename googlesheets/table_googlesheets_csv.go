@@ -24,6 +24,9 @@ func listSpreadsheetWithPath(ctx context.Context, p *plugin.Plugin, sheetName st
 					}
 					rowData := map[string]string{}
 					for col_count, value := range row.Values {
+						if col_count >= len(spreadsheetHeaders) {
+							continue
+						}
 						mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(row_count+1), int64(col_count+1))
 						if mergeRow != nil && mergeColumn != nil {
 							parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]

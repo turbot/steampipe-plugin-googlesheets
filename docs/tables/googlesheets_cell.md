@@ -14,7 +14,7 @@ select
 from
   googlesheets_cell
 where
-  ranges = 'My Users!B1:C2';
+  range = 'Students!B1:C2';
 ```
 
 ### List all cells in a column
@@ -27,7 +27,7 @@ select
 from
   googlesheets_cell
 where
-  ranges = 'My Users!A:A';
+  range = 'Students!A:A';
 ```
 
 ### List all cells in a row
@@ -40,7 +40,7 @@ select
 from
   googlesheets_cell
 where
-  ranges = 'My Users!1:1';
+  range = 'Students!1:1';
 ```
 
 ### Get a specific cell
@@ -53,7 +53,7 @@ select
 from
   googlesheets_cell
 where
-  ranges = 'My Users!A2';
+  range = 'Students!A2';
 ```
 
 ### List all cells with hyperlink information
@@ -67,7 +67,7 @@ select
 from
   googlesheets_cell
 where
-  sheet_name = 'My Users'
+  sheet_name = 'Students'
   and hyperlink is not null;
 ```
 
@@ -82,7 +82,7 @@ select
 from
   googlesheets_cell
 where
-  sheet_name = 'My Users'
+  sheet_name = 'Students'
   and formula is not null;
 ```
 
@@ -97,7 +97,7 @@ select
 from
   googlesheets_cell
 where
-  sheet_name = 'My Users'
+  sheet_name = 'Students'
   and formula is not null
   and value in ('#N/A', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#ERROR!', '#NULL!');
 ```

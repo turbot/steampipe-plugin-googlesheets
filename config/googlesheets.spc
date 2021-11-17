@@ -9,6 +9,6 @@ connection "googlesheets" {
   # 2. To authenticate using OAuth 2.0, specify a client secret file
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
-  spreadsheet_id = "1kSJ8giCfSndHQCoVaOCVk1CBAXHelloxmEtda5gvdX0"
-  sheets         = ["My Users", "My Products"]
+  spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
+  sheets         = ["Students", "Marks", "AWS Services"]
 }

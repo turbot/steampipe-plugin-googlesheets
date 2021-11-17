@@ -24,7 +24,7 @@ func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []s
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheetData", "connection_error", err)
+		plugin.Logger(ctx).Error("getSpreadsheetHeaders", "connection_error", err)
 		return nil, err
 	}
 
@@ -81,7 +81,7 @@ func getMergeCells(ctx context.Context, d *plugin.Plugin, sheetName string) ([]*
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheetData", "connection_error", err)
+		plugin.Logger(ctx).Error("getMergeCells", "connection_error", err)
 		return nil, err
 	}
 
@@ -116,7 +116,7 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []stri
 
 	spreadsheetID := getSpreadsheetID(ctx, d)
 
-	resp := svc.Spreadsheets.Get(spreadsheetID).Fields(googleapi.Field("sheets(properties.title,data(rowData(values(userEnteredValue,effectiveValue,formattedValue,hyperlink,note))),merges)"))
+	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData(values(formattedValue))),merges)"))
 	if len(sheetNames) > 0 {
 		resp.Ranges(sheetNames...)
 	}

@@ -169,7 +169,7 @@ func listGooglesheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheetData", "connection_error", err)
+		plugin.Logger(ctx).Error("listGooglesheetSheets", "connection_error", err)
 		return nil, err
 	}
 

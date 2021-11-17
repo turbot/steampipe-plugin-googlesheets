@@ -37,7 +37,7 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 					Require: plugin.Optional,
 				},
 				{
-					Name:    "ranges",
+					Name:    "range",
 					Require: plugin.Optional,
 				},
 				{
@@ -93,10 +93,10 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
-				Name:        "ranges",
+				Name:        "range",
 				Description: "The ranges to retrieve from the spreadsheet.",
 				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromQual("ranges"),
+				Transform:   transform.FromQual("range"),
 			},
 			{
 				Name:        "spreadsheet_id",
@@ -121,7 +121,7 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("getSpreadsheetData", "connection_error", err)
+		plugin.Logger(ctx).Error("listGooglesheetCells", "connection_error", err)
 		return nil, err
 	}
 
@@ -132,8 +132,8 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 
 	// Additional filters
 	quals := d.KeyColumnQuals
-	if quals["ranges"] != nil {
-		resp.Ranges(quals["ranges"].GetStringValue())
+	if quals["range"] != nil && quals["range"].GetStringValue() != "" {
+		resp.Ranges(quals["range"].GetStringValue())
 	} else if quals["sheet_name"] != nil {
 		if quals["row"] != nil && quals["col"] != nil {
 			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["col"].GetStringValue(), quals["row"].GetInt64Value())

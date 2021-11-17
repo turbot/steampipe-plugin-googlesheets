@@ -29,7 +29,7 @@ select
 from
   googlesheets_sheet
 where
-  title = 'My Users';
+  title = 'Students';
 ```
 
 ### List all hidden sheets

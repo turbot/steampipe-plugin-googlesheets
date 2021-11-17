@@ -23,10 +23,13 @@ Run a query:
 
 ```sql
 select
-  first_name,
-  last_name
+  "Full Title",
+  "Title"
 from
-  "My Users";
+  "AWS Resource Types"
+where
+  "Tags Model" = 'NO_TAGS'
+limit 3;
 ```
 
 ## Developing
