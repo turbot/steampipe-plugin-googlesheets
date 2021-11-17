@@ -10,5 +10,5 @@ connection "googlesheets" {
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
   spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
-  sheets         = ["Students", "Marks", "AWS Services"]
+  sheets         = ["Dashboard", "Students", "Marks", "AWS Services"]
 }
