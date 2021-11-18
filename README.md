@@ -23,13 +23,13 @@ Run a query:
 
 ```sql
 select
-  "Full Title",
-  "Title"
+  sheet_name,
+  cell,
+  value
 from
-  "AWS Resource Types"
+  googlesheets_cell
 where
-  "Tags Model" = 'NO_TAGS'
-limit 3;
+  range = 'Students!1:1';
 ```
 
 ## Developing

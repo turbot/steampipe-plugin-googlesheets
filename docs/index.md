@@ -20,23 +20,30 @@ For example:
 
 ```sql
 select
-  "Full Title",
-  "Title"
+  sheet_name,
+  cell,
+  value
 from
-  "AWS Resource Types"
+  googlesheets_cell
 where
-  "Tags Model" = 'NO_TAGS'
-limit 3;
+  range = 'Students!1:1';
 ```
 
 ```sh
-+--------------------------+--------------------+
-| Full Title               | Title              |
-+--------------------------+--------------------+
-| AWS > AppFlow            | AppFlow            |
-| AWS > Artifact           | Artifact           |
-| AWS > Elastic Transcoder | Elastic Transcoder |
-+--------------------------+--------------------+
++------------+------+--------------------------+
+| sheet_name | cell | value                    |
++------------+------+--------------------------+
+| Students   | E1   | Home State               |
+| Students   | F1   | Major                    |
+| Students   | B1   | ID                       |
+| Students   | H1   | Mentor                   |
+| Students   | D1   | Class Level              |
+| Students   | C1   | Gender                   |
+| Students   | I1   | CGPA                     |
+| Students   | G1   | Extracurricular Activity |
+| Students   | J1   | Percentage               |
+| Students   | A1   | Student Name             |
++------------+------+--------------------------+
 ```
 
 ## Documentation
@@ -71,24 +78,23 @@ connection "googlesheets" {
 
   # You may connect to Google Sheet using more than one option:
   # 1. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
-  # credential_file         = "/path/to/my/creds.json"
+  # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
+  # credentials = "/path/to/my/creds.json"
+  
+  # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs. 
   # impersonated_user_email = "username@domain.com"
 
   # 2. To authenticate using OAuth 2.0, specify a client secret file
+  # `token_path` - The path to a JSON credential file that contains Google application credentials. 
+  # If `token_path` is not specified in a connection, credentials will be loaded from:
+      - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
+      - The standard location (`~/.config/gcloud/application_default_credentials.json`)
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
   spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
-  sheets         = ["Students", "Marks"]
+  sheets         = ["Dashboard", "Students", "Books", "Marks", "Employee"]
 }
 ```
-
-- `spreadsheet_id` (required) - The ID of the spreadsheet.
-- `sheets` (required) - A list of name of the sheets to search for.
-- `credentials` (optional) - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
-- `impersonated_user_email` (optional) - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs. `impersonated_user_email` must be set, since the service account needs to impersonate a user with Admin API permissions to access the sheet services.
-- `token_path` (optional) - The path to a JSON credential file that contains Google application credentials. If `token_path` is not specified in a connection, credentials will be loaded from:
-  - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
-  - The standard location (`~/.config/gcloud/application_default_credentials.json`)
 
 ## Get involved
 

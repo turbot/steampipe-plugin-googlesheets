@@ -5,7 +5,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin/schema"
 )
 
-type csvConfig struct {
+type googleSheetsConfig struct {
 	Credentials           *string  `cty:"credentials"`
 	ImpersonatedUserEmail *string  `cty:"impersonated_user_email"`
 	TokenPath             *string  `cty:"token_path"`
@@ -33,14 +33,14 @@ var ConfigSchema = map[string]*schema.Attribute{
 }
 
 func ConfigInstance() interface{} {
-	return &csvConfig{}
+	return &googleSheetsConfig{}
 }
 
 // GetConfig :: retrieve and cast connection config from query data
-func GetConfig(connection *plugin.Connection) csvConfig {
+func GetConfig(connection *plugin.Connection) googleSheetsConfig {
 	if connection == nil || connection.Config == nil {
-		return csvConfig{}
+		return googleSheetsConfig{}
 	}
-	config, _ := connection.Config.(csvConfig)
+	config, _ := connection.Config.(googleSheetsConfig)
 	return config
 }

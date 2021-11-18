@@ -7,22 +7,24 @@ import (
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
 )
 
 //// TABLE DEFINITION
 
-func tableGooglesheetsSpreadsheet(_ context.Context) *plugin.Table {
+func tableGoogleSheetsSpreadsheet(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "googlesheets_spreadsheet",
 		Description: "Retrieve the metadata of given spreadsheet.",
 		List: &plugin.ListConfig{
-			Hydrate: listGooglesheetSpreadsheet,
+			Hydrate: listGoogleSheetSpreadsheet,
 		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "id",
 				Description: "The ID of the spreadsheet.",
 				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Id"),
 			},
 			{
 				Name:        "name",
@@ -200,7 +202,7 @@ func tableGooglesheetsSpreadsheet(_ context.Context) *plugin.Table {
 
 //// LIST FUNCTION
 
-func listGooglesheetSpreadsheet(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listGoogleSheetSpreadsheet(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
 	opts, err := getSessionConfig(ctx, d.Table.Plugin)
 	if err != nil {
@@ -210,7 +212,7 @@ func listGooglesheetSpreadsheet(ctx context.Context, d *plugin.QueryData, _ *plu
 	// Create service
 	svc, err := drive.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("listGooglesheetSpreadsheet", "connection_error", err)
+		plugin.Logger(ctx).Error("listGoogleSheetSpreadsheet", "connection_error", err)
 		return nil, err
 	}
 

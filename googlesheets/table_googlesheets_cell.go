@@ -13,24 +13,24 @@ import (
 )
 
 type cellInfo = struct {
-	Column      string
-	Row         int
-	CellAddress string
-	Value       string
-	Formula     string
-	Note        string
-	Hyperlink   string
-	SheetName   string
+	Column    string
+	Row       int
+	Cell      string
+	Value     string
+	Formula   string
+	Note      string
+	Hyperlink string
+	SheetName string
 }
 
 //// TABLE DEFINITION
 
-func tableGooglesheetsCell(_ context.Context) *plugin.Table {
+func tableGoogleSheetsCell(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "googlesheets_cell",
 		Description: "Retrieve information of cells of a sheet in a spreadsheet.",
 		List: &plugin.ListConfig{
-			Hydrate: listGooglesheetCells,
+			Hydrate: listGoogleSheetCells,
 			KeyColumns: []*plugin.KeyColumn{
 				{
 					Name:    "sheet_name",
@@ -68,7 +68,7 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_INT,
 			},
 			{
-				Name:        "cell_address",
+				Name:        "cell",
 				Description: "The address of a cell.",
 				Type:        proto.ColumnType_STRING,
 			},
@@ -111,7 +111,7 @@ func tableGooglesheetsCell(_ context.Context) *plugin.Table {
 
 //// LIST FUNCTION
 
-func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
 	opts, err := getSessionConfig(ctx, d.Table.Plugin)
 	if err != nil {
@@ -121,7 +121,7 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("listGooglesheetCells", "connection_error", err)
+		plugin.Logger(ctx).Error("listGoogleSheetCells", "connection_error", err)
 		return nil, err
 	}
 
@@ -139,7 +139,8 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["col"].GetStringValue(), quals["row"].GetInt64Value())
 			resp.Ranges(ranges)
 		} else {
-			resp.Ranges(quals["sheet_name"].GetStringValue())
+			ranges := getQualListValues(quals)
+			resp.Ranges(ranges...)
 		}
 	}
 
@@ -148,6 +149,24 @@ func listGooglesheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 		return nil, err
 	}
 
+	/*
+	 * JSON representation of response
+		{
+			"sheets": [
+				{
+					"data": [
+						{
+							"rowData": [
+								{
+									"values": column properties...
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	 */	
 	if data.Sheets != nil {
 		for _, sheet := range data.Sheets {
 			if sheet.Data != nil {
@@ -214,14 +233,14 @@ func getCellInfo(sheetName string, rowCount int, colCount int, data *sheets.Cell
 		formulaValue = *data.UserEnteredValue.FormulaValue
 	}
 	result := cellInfo{
-		SheetName:   sheetName,
-		Column:      intToLetters(colCount + 1),
-		Row:         rowCount + 1,
-		CellAddress: fmt.Sprintf("%s%d", intToLetters(colCount+1), rowCount+1),
-		Value:       data.FormattedValue,
-		Formula:     formulaValue,
-		Note:        data.Note,
-		Hyperlink:   data.Hyperlink,
+		SheetName: sheetName,
+		Column:    intToLetters(colCount + 1),
+		Row:       rowCount + 1,
+		Cell:      fmt.Sprintf("%s%d", intToLetters(colCount+1), rowCount+1),
+		Value:     data.FormattedValue,
+		Formula:   formulaValue,
+		Note:      data.Note,
+		Hyperlink: data.Hyperlink,
 	}
 
 	return result

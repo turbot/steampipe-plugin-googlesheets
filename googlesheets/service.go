@@ -198,7 +198,7 @@ func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, 
 	// Authorize the request
 	config, err := google.JWTConfigFromJSON(
 		[]byte(credentialContent),
-		sheets.SpreadsheetsReadonlyScope,
+		sheets.DriveReadonlyScope,
 	)
 	if err != nil {
 		return nil, err

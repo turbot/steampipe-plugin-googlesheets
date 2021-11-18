@@ -47,14 +47,15 @@ where
   hidden;
 ```
 
-### List sheets with merge cells
+### List all protected sheets
 
 ```sql
 select
   title,
   sheet_id,
-  spreadsheet_id,
-  merges
+  spreadsheet_id
 from
-  googlesheets_sheet;
+  googlesheets_sheet
+where
+  protected_ranges is not null;
 ```

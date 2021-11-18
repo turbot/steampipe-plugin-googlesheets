@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/mitchellh/go-homedir"
+	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
@@ -85,4 +86,18 @@ func getMaxLength(values [][]interface{}) int {
 		}
 	}
 	return maxColsLength
+}
+
+func getQualListValues(quals map[string]*proto.QualValue) []string {
+	if quals["sheet_name"].GetStringValue() != "" {
+		return []string{quals["sheet_name"].GetStringValue()}
+	} else if quals["sheet_name"].GetListValue() != nil {
+		values := make([]string, 0)
+		for _, value := range quals["sheet_name"].GetListValue().Values {
+			values = append(values, value.GetStringValue())
+		}
+		return values
+	}
+
+	return nil
 }

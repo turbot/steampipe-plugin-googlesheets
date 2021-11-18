@@ -9,7 +9,7 @@ Retrieves information of a non-empty cell in a given sheet.
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value
 from
   googlesheets_cell
@@ -22,7 +22,7 @@ where
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value
 from
   googlesheets_cell
@@ -35,7 +35,7 @@ where
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value
 from
   googlesheets_cell
@@ -48,7 +48,7 @@ where
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value
 from
   googlesheets_cell
@@ -61,7 +61,7 @@ where
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value,
   hyperlink
 from
@@ -76,7 +76,7 @@ where
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value,
   formula
 from
@@ -91,13 +91,13 @@ where
 ```sql
 select
   sheet_name,
-  cell_address,
+  cell,
   value,
   formula
 from
   googlesheets_cell
 where
-  sheet_name = 'Students'
+  sheet_name = 'Employee'
   and formula is not null
   and value in ('#N/A', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#ERROR!', '#NULL!');
 ```

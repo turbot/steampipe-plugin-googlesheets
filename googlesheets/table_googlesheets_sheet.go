@@ -12,12 +12,12 @@ import (
 
 //// TABLE DEFINITION
 
-func tableGooglesheetsSheet(_ context.Context) *plugin.Table {
+func tableGoogleSheetsSheet(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "googlesheets_sheet",
 		Description: "Retrieve the sheet in a given spreadsheet.",
 		List: &plugin.ListConfig{
-			Hydrate: listGooglesheetSheets,
+			Hydrate: listGoogleSheetSheets,
 			KeyColumns: []*plugin.KeyColumn{
 				{
 					Name:    "title",
@@ -159,7 +159,7 @@ func tableGooglesheetsSheet(_ context.Context) *plugin.Table {
 
 //// LIST FUNCTION
 
-func listGooglesheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
 	opts, err := getSessionConfig(ctx, d.Table.Plugin)
 	if err != nil {
@@ -169,7 +169,7 @@ func listGooglesheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 	// Create service
 	svc, err := sheets.NewService(ctx, opts...)
 	if err != nil {
-		plugin.Logger(ctx).Error("listGooglesheetSheets", "connection_error", err)
+		plugin.Logger(ctx).Error("listGoogleSheetSheets", "connection_error", err)
 		return nil, err
 	}
 

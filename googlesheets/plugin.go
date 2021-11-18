@@ -34,9 +34,9 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	tables := map[string]*plugin.Table{}
 
 	/* Static tables */
-	tables["googlesheets_cell"] = tableGooglesheetsCell(ctx)
-	tables["googlesheets_sheet"] = tableGooglesheetsSheet(ctx)
-	tables["googlesheets_spreadsheet"] = tableGooglesheetsSpreadsheet(ctx)
+	tables["googlesheets_cell"] = tableGoogleSheetsCell(ctx)
+	tables["googlesheets_sheet"] = tableGoogleSheetsSheet(ctx)
+	tables["googlesheets_spreadsheet"] = tableGoogleSheetsSpreadsheet(ctx)
 
 	/* Dynamic tables */
 
@@ -111,14 +111,14 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 				}
 
 				/*
-				* Case:
-				  | Col A |       |       |
-				  | ----- | ----- | ----- |
-				  | val A | val B | val C |
-				* Expected output
-				  | Col A | B     | C     |
-				  | ----- | ----- | ----- |
-				  | val A | val B | val C |
+					* Case:
+					  | Col A |       |       |
+					  | ----- | ----- | ----- |
+					  | val A | val B | val C |
+					* Expected output
+					  | Col A | B     | C     |
+					  | ----- | ----- | ----- |
+					  | val A | val B | val C |
 				*/
 				if len(data.Values[0]) < maxColsLength {
 					for i := len(data.Values[0]); i < maxColsLength; i++ {
