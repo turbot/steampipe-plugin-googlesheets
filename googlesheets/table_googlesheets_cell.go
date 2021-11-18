@@ -158,7 +158,7 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 						{
 							"rowData": [
 								{
-									"values": column properties...
+									"values": [{column properties...}]
 								}
 							]
 						}
@@ -172,8 +172,10 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 			if sheet.Data != nil {
 				for _, i := range sheet.Data {
 					for rowCount, row := range i.RowData {
+						// If a range has been passed to query a particular range, `StartRow` will indicate the start row index(zero-based)
 						rowCount = rowCount + int(i.StartRow)
 						for colCount, value := range row.Values {
+							// If a range has been passed to query a particular range, `StartColumn` will indicate the start column index(zero-based)
 							colCount = colCount + int(i.StartColumn)
 							mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(rowCount+1), int64(colCount+1))
 							if mergeRow != nil && mergeColumn != nil { // Merge cell
@@ -199,8 +201,17 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	return nil, nil
 }
 
+// findMergeCells identifies the merge cells and returns the merge cell along with its parent cell details
 func findMergeCells(mergeInfo []*sheets.GridRange, currentRow int64, currentColumn int64) (*int64, *int64, *int64, *int64) {
 	for _, mergeData := range mergeInfo {
+		/*
+		 * Calculate difference between startRow, endRow index; and startColumn, endColumn index
+		 * If rowDiff is >1, it is vertically merged; and
+		 * If colDiff is >1, it is horizontally merged
+		 * else multiple rows are merged (e.g. A2,B2,A3,B3 are merged together)
+		 * This function will identify the parent of the merge cell, and returns the parent cell data; and
+		 * the merge cell will use the value of their corresponding parent
+		 */
 		rowDiff := mergeData.EndRowIndex - mergeData.StartRowIndex
 		colDiff := mergeData.EndColumnIndex - mergeData.StartColumnIndex
 

@@ -56,7 +56,7 @@ For instance, `Employee` sheet has missing values in column 6. `.inspect` of tha
 +---------------+------+-------------+
 ```
 
-- If the sheet has a column with same name, the table will update the column name by adding the corresponding column index.
+- If the sheet has more than one columns with same name, the table will update the column name by adding the corresponding column index.
 
 For instance, `Employee` sheet have columns with same name in column 4 and column 5. `.inspect` of that table will be following:
 

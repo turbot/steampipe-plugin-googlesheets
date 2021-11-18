@@ -133,18 +133,18 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 
 	// Get credential file path, and user to impersonate from config (if mentioned)
 	var credentialContent, tokenPath string
-	googlesheetConfig := GetConfig(d.Connection)
+	googleSheetsConfig := GetConfig(d.Connection)
 
 	// Return if no SpreadsheetID provided
-	if *googlesheetConfig.SpreadsheetId == "" {
+	if *googleSheetsConfig.SpreadsheetId == "" {
 		return nil, errors.New("spreadsheet_id must be configured")
 	}
 
-	if googlesheetConfig.Credentials != nil {
-		credentialContent = *googlesheetConfig.Credentials
+	if googleSheetsConfig.Credentials != nil {
+		credentialContent = *googleSheetsConfig.Credentials
 	}
-	if googlesheetConfig.TokenPath != nil {
-		tokenPath = *googlesheetConfig.TokenPath
+	if googleSheetsConfig.TokenPath != nil {
+		tokenPath = *googleSheetsConfig.TokenPath
 	}
 
 	// If credential path provided, use domain-wide delegation
@@ -178,16 +178,16 @@ func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, 
 
 	// Get credential file path, and user to impersonate from config (if mentioned)
 	var impersonateUser string
-	googlesheetConfig := GetConfig(d.Connection)
+	googleSheetsConfig := GetConfig(d.Connection)
 
 	// Read credential from JSON string, or from the given path
-	credentialContent, err := pathOrContents(*googlesheetConfig.Credentials)
+	credentialContent, err := pathOrContents(*googleSheetsConfig.Credentials)
 	if err != nil {
 		return nil, err
 	}
 
-	if googlesheetConfig.ImpersonatedUserEmail != nil {
-		impersonateUser = *googlesheetConfig.ImpersonatedUserEmail
+	if googleSheetsConfig.ImpersonatedUserEmail != nil {
+		impersonateUser = *googleSheetsConfig.ImpersonatedUserEmail
 	}
 
 	// Return error, since impersonation required to authenticate using domain-wide delegation

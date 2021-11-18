@@ -18,11 +18,11 @@ func getSpreadsheetID(_ context.Context, p *plugin.Plugin) string {
 		return cachedData.(string)
 	}
 
-	googlesheetConfig := GetConfig(p.Connection)
+	googleSheetsConfig := GetConfig(p.Connection)
 
 	var spreadsheetID string
-	if googlesheetConfig.SpreadsheetId != nil {
-		spreadsheetID = *googlesheetConfig.SpreadsheetId
+	if googleSheetsConfig.SpreadsheetId != nil {
+		spreadsheetID = *googleSheetsConfig.SpreadsheetId
 	}
 
 	p.ConnectionManager.Cache.Set(spreadsheetCacheKey, spreadsheetID)

@@ -41,7 +41,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	/* Dynamic tables */
 
 	// Get the list of sheets to be retrieved from the spreadsheet
-	googlesheetConfig := GetConfig(p.Connection)
+	googleSheetsConfig := GetConfig(p.Connection)
 
 	// Get the headers along with sheet name
 	availableSheets, err := getSpreadsheets(ctx, p)
@@ -51,7 +51,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 
 	// Return all valid sheets
 	var validSheets []string
-	for _, i := range googlesheetConfig.Sheets {
+	for _, i := range googleSheetsConfig.Sheets {
 		if helpers.StringSliceContains(availableSheets, i) {
 			validSheets = append(validSheets, i)
 		}
@@ -64,7 +64,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	}
 
 	// Create tablemap for all the available sheets
-	for _, sheetName := range googlesheetConfig.Sheets {
+	for _, sheetName := range googleSheetsConfig.Sheets {
 		for _, data := range spreadsheetData {
 			// Return if empty sheet
 			if len(data.Values) == 0 {

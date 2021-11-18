@@ -23,8 +23,9 @@ from
 ```sql
 select
   name as spreadsheet_name,
-  last_modifying_user ->> 'display_name' as user_display_name,
-  last_modifying_user ->> 'emailAddress' as user_email_address
+  last_modifying_user ->> 'displayName' as user_display_name,
+  last_modifying_user ->> 'emailAddress' as user_email_address,
+  modified_time
 from
   googlesheets_spreadsheet;
 ```
