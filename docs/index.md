@@ -91,8 +91,8 @@ connection "googlesheets" {
       - The standard location (`~/.config/gcloud/application_default_credentials.json`)
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
-  spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
-  sheets         = ["Dashboard", "Students", "Books", "Marks", "Employee"]
+  # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
+  # sheets         = ["Dashboard", "Students", "Books", "Marks", "Employee"]
 }
 ```
 

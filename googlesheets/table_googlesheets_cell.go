@@ -150,23 +150,23 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	}
 
 	/*
-	 * JSON representation of response
-		{
-			"sheets": [
-				{
-					"data": [
-						{
-							"rowData": [
-								{
-									"values": [{column properties...}]
-								}
-							]
-						}
-					]
-				}
-			]
-		}
-	 */	
+	   * JSON representation of response
+	    {
+	      "sheets": [
+	        {
+	          "data": [
+	            {
+	              "rowData": [
+	                {
+	                  "values": [{column properties...}]
+	                }
+	              ]
+	            }
+	          ]
+	        }
+	      ]
+	    }
+	*/
 	if data.Sheets != nil {
 		for _, sheet := range data.Sheets {
 			if sheet.Data != nil {

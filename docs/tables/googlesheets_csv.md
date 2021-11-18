@@ -32,51 +32,76 @@ created from and all column values are returned as text data type.
 
 **NOTE:**
 
-- This table always checks for data in `A1` cell in the actual sheet to assume it as a CSV; otherwise plugin will skip that sheet.
+- This table always checks for data in `A1` cell in the actual sheet to assume it as a CSV; otherwise plugin will **skip** that sheet.
 
 - If the sheet is missing some values in the first row(header row), the table will use the column name based on column index, i.e. `A, B, AA`.
 
-For instance, `Employee` sheet has missing values in column 6. `.inspect` of that table will be following:
+  For instance, `Employee` sheet has missing values in A8. `.inspect` of that table will be following:
 
-```shell
-.inspect "Employee"
+  ```shell
+  .inspect "Employee"
 
-+---------------+------+-------------+
-| column        | type | description |
-+---------------+------+-------------+
-| Birthday      | text | Field 8.    |
-| Contact       | text | Field 3.    |
-| Contact [E]   | text | Field 4.    |
-| Duration      | text | Field 6.    |
-| Employee ID   | text | Field 0.    |
-| Employee Name | text | Field 1.    |
-| H             | text | Field 7.    |
-| Joining Date  | text | Field 5.    |
-| Profile Image | text | Field 2.    |
-+---------------+------+-------------+
-```
+  +---------------+------+-------------+
+  | column        | type | description |
+  +---------------+------+-------------+
+  | Birthday [F]  | text | Field 5.    |
+  | Birthday [G]  | text | Field 6.    |
+  | Contact       | text | Field 3.    |
+  | Contact [E]   | text | Field 4.    |
+  | Duration      | text | Field 8.    |
+  | Employee ID   | text | Field 0.    |
+  | Employee Name | text | Field 1.    |
+  | J             | text | Field 9.    |
+  | Joining Date  | text | Field 7.    |
+  | Profile Image | text | Field 2.    |
+  +---------------+------+-------------+
+  ```
 
 - If the sheet has more than one columns with same name, the table will update the column name by adding the corresponding column index.
 
-For instance, `Employee` sheet have columns with same name in column 4 and column 5. `.inspect` of that table will be following:
+  For instance, `Employee` sheet have columns with same name in D1 and E1. `.inspect` of that table will be following:
 
-```shell
-.inspect "Employee"
+  ```shell
+  .inspect "Employee"
 
-+---------------+------+-------------+
-| column        | type | description |
-+---------------+------+-------------+
-| Birthday      | text | Field 8.    |
-| Contact       | text | Field 3.    |
-| Contact [E]   | text | Field 4.    |
-| Duration      | text | Field 6.    |
-| Employee ID   | text | Field 0.    |
-| Employee Name | text | Field 1.    |
-| H             | text | Field 7.    |
-| Joining Date  | text | Field 5.    |
-| Profile Image | text | Field 2.    |
-+---------------+------+-------------+
-```
+  +---------------+------+-------------+
+  | column        | type | description |
+  +---------------+------+-------------+
+  | Birthday [F]  | text | Field 5.    |
+  | Birthday [G]  | text | Field 6.    |
+  | Contact       | text | Field 3.    |
+  | Contact [E]   | text | Field 4.    |
+  | Duration      | text | Field 8.    |
+  | Employee ID   | text | Field 0.    |
+  | Employee Name | text | Field 1.    |
+  | J             | text | Field 9.    |
+  | Joining Date  | text | Field 7.    |
+  | Profile Image | text | Field 2.    |
+  +---------------+------+-------------+
+  ```
+
+- If the sheet has vertically merged cells, the table will update the column name by adding the corresponding column index along with the cell data to differentiate the columns.
+
+  For instance, `Employee` sheet has header where F1 and G1 are merged together. `.inspect` of that table will be following:
+
+  ```shell
+  .inspect "Employee"
+
+  +---------------+------+-------------+
+  | column        | type | description |
+  +---------------+------+-------------+
+  | Birthday [F]  | text | Field 5.    |
+  | Birthday [G]  | text | Field 6.    |
+  | Contact       | text | Field 3.    |
+  | Contact [E]   | text | Field 4.    |
+  | Duration      | text | Field 8.    |
+  | Employee ID   | text | Field 0.    |
+  | Employee Name | text | Field 1.    |
+  | J             | text | Field 9.    |
+  | Joining Date  | text | Field 7.    |
+  | Profile Image | text | Field 2.    |
+  +---------------+------+-------------+
+  ```
 
 ## Examples
 
@@ -86,12 +111,17 @@ Assuming your connection is called `googlesheets` (the default), list all tables
 
 ```shell
 .inspect googlesheets
-+----------+-------------------------------+
-| table    | description                   |
-+----------+-------------------------------+
-| Students | Retrieves data from Students. |
-| Marks    | Retrieves data from Marks.    |
-+----------+-------------------------------+
++--------------------------+------------------------------------------------------------+
+| table                    | description                                                |
++--------------------------+------------------------------------------------------------+
+| Books                    | Retrieves data from Books.                                 |
+| Employee                 | Retrieves data from Employee.                              |
+| Marks                    | Retrieves data from Marks.                                 |
+| Students                 | Retrieves data from Students.                              |
+| googlesheets_cell        | Retrieve information of cells of a sheet in a spreadsheet. |
+| googlesheets_sheet       | Retrieve the sheet in a given spreadsheet.                 |
+| googlesheets_spreadsheet | Retrieve the metadata of given spreadsheet.                |
++--------------------------+------------------------------------------------------------+
 ```
 
 To get details for a specific table, inspect it by name:
@@ -101,12 +131,15 @@ To get details for a specific table, inspect it by name:
 +--------------------------+------+-------------+
 | column                   | type | description |
 +--------------------------+------+-------------+
-| Class Level              | text | Field 2.    |
-| Extracurricular Activity | text | Field 5.    |
-| Gender                   | text | Field 1.    |
-| HOD                      | text | Field 6.    |
-| Home State               | text | Field 3.    |
-| Major                    | text | Field 4.    |
+| CGPA                     | text | Field 8.    |
+| Class Level              | text | Field 3.    |
+| Extracurricular Activity | text | Field 6.    |
+| Gender                   | text | Field 2.    |
+| Home State               | text | Field 4.    |
+| ID                       | text | Field 1.    |
+| Major                    | text | Field 5.    |
+| Mentor                   | text | Field 7.    |
+| Percentage               | text | Field 9.    |
 | Student Name             | text | Field 0.    |
 +--------------------------+------+-------------+
 ```
@@ -141,13 +174,13 @@ Columns are always in text form when read from the Google sheet. The column name
 
 - If your column names are complex, use identifier quotes:
 
-```sql
-select
-  "Student Name",
-  "Major"
-from
-  "Students";
-```
+  ```sql
+  select
+    "Student Name",
+    "Major"
+  from
+    "Students";
+  ```
 
 ### Casting column data for analysis
 
