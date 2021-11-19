@@ -96,7 +96,7 @@ connection "googlesheets" {
 ```
 
 The default values for the `spreadsheet_id` and `sheets` arguments are
-configured to be used with our [Sample School
+configured to be used with our [Google Sheets Plugin - Sample School
 Data](https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4)
 spreadsheet, which is a public spreadsheet maintained by the Steampipe team.
 All of our examples in this document, and in our table documents, are based on

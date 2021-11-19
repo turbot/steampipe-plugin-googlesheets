@@ -12,7 +12,7 @@ connection "googlesheets" {
   credentials             = "/Users/myuser/keys/my-key.json"
   impersonated_user_email = "myuser@example.com"
 
-  # Google Sheets Plugin Examples
+  # Google Sheets Plugin - Sample School Data
   spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
   sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
 }
