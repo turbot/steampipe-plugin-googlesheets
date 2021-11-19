@@ -1,8 +1,8 @@
 ---
 organization: Turbot
-category: ["software development"]
+category: ["saas"]
 icon_url: "/images/plugins/turbot/googlesheets.svg"
-brand_color: "#0F9D58"
+brand_color: "#1EA362"
 display_name: "Google Sheets"
 short_name: "googlesheets"
 description: "Steampipe plugin for query data from Google Sheets."
@@ -94,6 +94,13 @@ connection "googlesheets" {
   # sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
 }
 ```
+
+The default values for the `spreadsheet_id` and `sheets` arguments are
+configured to be used with our [Sample School
+Data](https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4)
+spreadsheet, which is a public spreadsheet maintained by the Steampipe team.
+All of our examples in this document, and in our table documents, are based on
+this sample spreadsheet.
 
 ## Get involved
 
