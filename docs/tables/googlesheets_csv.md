@@ -127,19 +127,18 @@ from
 
 ### Query specific columns
 
-Columns are always in text form when read from the Google sheet. The column names come from the first row of the sheet.
+Columns are always in text form when read from Google Sheets. The column names
+come from the first row of the sheet.
 
-**NOTE:**
+If your column names are complex, use identifier quotes:
 
-- If your column names are complex, use identifier quotes:
-
-  ```sql
-  select
-    "Student Name",
-    "Major"
-  from
-    "Students";
-  ```
+```sql
+select
+  "Student Name",
+  "Major"
+from
+  "Students";
+```
 
 ### Casting column data for analysis
 
