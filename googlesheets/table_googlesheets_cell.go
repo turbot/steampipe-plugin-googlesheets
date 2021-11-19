@@ -41,6 +41,10 @@ func tableGoogleSheetsCell(_ context.Context) *plugin.Table {
 					Require: plugin.Optional,
 				},
 				{
+					Name:    "cell",
+					Require: plugin.Optional,
+				},
+				{
 					Name:    "col",
 					Require: plugin.Optional,
 				},
@@ -132,12 +136,38 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 
 	// Additional filters
 	quals := d.KeyColumnQuals
+
+	/*
+		 * If `range` qual is defined, API will use that filter directly
+		 * If `sheet_name` qual is defined, the following checks will be performed
+		    - If `cell` qual is defined, API will use that value to build `ranges` filter (i.e. '[<sheet_name>!<cell>]')
+				- If only `row` is defined, `ranges` filter value will be '[<sheet_name>!<row>:<row>]'
+				- If only `col` is defined, `ranges` filter value will be '[<sheet_name>!<col>:<col>]'
+				- If both `row` and `col` are defined, `ranges` filter value will be '[<sheet_name>!<col><row>]'
+		 * If only `sheet_name` is defined, it will query the whole sheet
+	*/
+
+	// If `range` qual is defined, API will use that filter directly
 	if quals["range"] != nil && quals["range"].GetStringValue() != "" {
 		resp.Ranges(quals["range"].GetStringValue())
 	} else if quals["sheet_name"] != nil {
-		if quals["row"] != nil && quals["col"] != nil {
-			ranges := fmt.Sprintf("%s!%s%d", quals["sheet_name"].GetStringValue(), quals["col"].GetStringValue(), quals["row"].GetInt64Value())
-			resp.Ranges(ranges)
+		sheetName := quals["sheet_name"].GetStringValue()
+		if quals["cell"] != nil { // only `cell` defined
+			sheetRange := fmt.Sprintf("%s!%s", sheetName, quals["cell"].GetStringValue())
+			resp.Ranges(sheetRange)
+		} else if quals["row"] != nil && quals["col"] != nil { // both `row` and `col` defined
+			row := quals["row"].GetInt64Value()
+			col := quals["col"].GetStringValue()
+			sheetRange := fmt.Sprintf("%s!%s%d", sheetName, col, row)
+			resp.Ranges(sheetRange)
+		} else if quals["row"] != nil { // only `row` defined
+			row := quals["row"].GetInt64Value()
+			sheetRange := fmt.Sprintf("%s!%d:%d", sheetName, row, row)
+			resp.Ranges(sheetRange)
+		} else if quals["col"] != nil { // only `col` defined
+			col := quals["col"].GetStringValue()
+			sheetRange := fmt.Sprintf("%s!%s:%s", sheetName, col, col)
+			resp.Ranges(sheetRange)
 		} else {
 			ranges := getQualListValues(quals)
 			resp.Ranges(ranges...)

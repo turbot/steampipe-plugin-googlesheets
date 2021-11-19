@@ -56,6 +56,21 @@ where
   range = 'Students!A2';
 ```
 
+### Get a specific cell using `row` and `col`
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  sheet_name = 'Students'
+  and row = 2
+  and col = 'A';
+```
+
 ### List all cells with hyperlink information
 
 ```sql

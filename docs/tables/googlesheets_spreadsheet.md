@@ -30,6 +30,20 @@ from
   googlesheets_spreadsheet;
 ```
 
+### Check if current user has capability to edit the spreadsheet
+
+```sql
+select
+  name as spreadsheet_name,
+  web_view_link,
+  case
+    when capabilities -> 'canEdit' is null then false 
+    else (capabilities ->> 'canEdit')::boolean
+  end as can_edit
+from
+  googlesheets_spreadsheet;
+```
+
 ### Get sharing info with permissions
 
 ```sql

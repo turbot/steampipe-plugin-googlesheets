@@ -188,12 +188,15 @@ Text columns can be easily cast to other types:
 
 ```sql
 select
-  "Student Name" as student_name,
-  cast("Percentage" as double precision) as percentage
+  "Name" as book_name,
+  "Author" as author,
+  "Issued By" as issued_by,
+  case
+    when "Issue Date" <> '' then "Issue Date"::timestamptz
+  end as issued_at,
+  "Verified"::boolean as verified
 from
-  "Students"
-where
-  cast("Percentage" as double precision) > 85;
+  "Books";
 ```
 
 ### Querying a specific row using pivot table
