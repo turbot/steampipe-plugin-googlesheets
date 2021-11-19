@@ -87,10 +87,11 @@ connection "googlesheets" {
   # 2. To authenticate using OAuth 2.0, specify a client secret file
   # `token_path` - The path to a JSON credential file that contains Google application credentials. 
   # If `token_path` is not specified in a connection, credentials will be loaded from:
-      - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
-      - The standard location (`~/.config/gcloud/application_default_credentials.json`)
+  #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
+  #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
+  # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
   # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
   # sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
 }
