@@ -7,14 +7,14 @@ For instance, if you have configured [Google Sheets Plugin Examples](https://doc
 
 - Books
 - Dashboard
-- Employee
+- Employees
 - Marks
 - Students
 
 This plugin will create 2 tables:
 
 - Books
-- Employee
+- Employees
 - Marks
 - Students
 
@@ -36,10 +36,10 @@ created from and all column values are returned as text data type.
 
 - If the sheet is missing some values in the first row(header row), the table will use the column name based on column index, i.e. `A, B, AA`.
 
-  For instance, `Employee` sheet has missing values in A8. `.inspect` of that table will be following:
+  For instance, `Employees` sheet has missing values in A8. `.inspect` of that table will be following:
 
   ```shell
-  .inspect "Employee"
+  .inspect "Employees"
 
   +---------------+------+-------------+
   | column        | type | description |
@@ -59,10 +59,10 @@ created from and all column values are returned as text data type.
 
 - If the sheet has more than one columns with same name, the table will update the column name by adding the corresponding column index.
 
-  For instance, `Employee` sheet have columns with same name in D1 and E1. `.inspect` of that table will be following:
+  For instance, `Employees` sheet have columns with same name in D1 and E1. `.inspect` of that table will be following:
 
   ```shell
-  .inspect "Employee"
+  .inspect "Employees"
 
   +---------------+------+-------------+
   | column        | type | description |
@@ -82,10 +82,10 @@ created from and all column values are returned as text data type.
 
 - If the sheet has vertically merged cells, the table will update the column name by adding the corresponding column index along with the cell data to differentiate the columns.
 
-  For instance, `Employee` sheet has header where F1 and G1 are merged together. `.inspect` of that table will be following:
+  For instance, `Employees` sheet has header where F1 and G1 are merged together. `.inspect` of that table will be following:
 
   ```shell
-  .inspect "Employee"
+  .inspect "Employees"
 
   +---------------+------+-------------+
   | column        | type | description |
@@ -115,7 +115,7 @@ Assuming your connection is called `googlesheets` (the default), list all tables
 | table                    | description                                                |
 +--------------------------+------------------------------------------------------------+
 | Books                    | Retrieves data from Books.                                 |
-| Employee                 | Retrieves data from Employee.                              |
+| Employees                | Retrieves data from Employees.                             |
 | Marks                    | Retrieves data from Marks.                                 |
 | Students                 | Retrieves data from Students.                              |
 | googlesheets_cell        | Retrieve information of cells of a sheet in a spreadsheet. |

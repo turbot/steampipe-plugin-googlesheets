@@ -112,7 +112,7 @@ select
 from
   googlesheets_cell
 where
-  sheet_name = 'Employee'
+  sheet_name = 'Employees'
   and formula is not null
   and value in ('#N/A', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#ERROR!', '#NULL!');
 ```
