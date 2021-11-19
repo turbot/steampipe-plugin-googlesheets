@@ -91,8 +91,6 @@ where
 
 Similar to the examples above, you can also query a specific row or column using the `range` column:
 
-#### Get a specific row
-
 ```sql
 select
   sheet_name,
@@ -103,8 +101,6 @@ from
 where
   range = 'Students!1:1';
 ```
-
-#### Get a specific column
 
 ```sql
 select
@@ -119,8 +115,6 @@ where
 
 Or using the `row` and `col` columns:
 
-#### Get a specific row
-
 ```sql
 select
   sheet_name,
@@ -132,8 +126,6 @@ where
   sheet_name = 'Students'
   and row = 1;
 ```
-
-#### Get a specific column
 
 ```sql
 select
