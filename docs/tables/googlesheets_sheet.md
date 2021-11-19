@@ -10,9 +10,7 @@ Retrieves information of a sheet in the given spreadsheet.
 select
   title,
   sheet_id,
-  spreadsheet_id,
-  hidden,
-  sheet_type
+  spreadsheet_id
 from
   googlesheets_sheet;
 ```
@@ -32,7 +30,7 @@ where
   title = 'Students';
 ```
 
-### List all hidden sheets
+### List hidden sheets
 
 ```sql
 select
@@ -47,13 +45,14 @@ where
   hidden;
 ```
 
-### List all protected sheets
+### List sheets with protected ranges
 
 ```sql
 select
   title,
   sheet_id,
-  spreadsheet_id
+  spreadsheet_id,
+  protected_ranges
 from
   googlesheets_sheet
 where

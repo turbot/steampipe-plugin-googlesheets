@@ -1,10 +1,50 @@
 # Table: googlesheets_cell
 
-Retrieves information of a non-empty cell in a given sheet.
+Query cell data from sheets in a Google Sheets spreadsheet. Cells that have no
+data, i.e., no value or formula, will not be returned.
+
+When specifying the `range` key qual, you can use use [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1) or [R1C1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-2).
 
 ## Examples
 
-### List all cells within a specific range
+### Query cells in all sheets
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+```
+
+### Query cells in a specific sheet
+
+You can query all cells from a specific sheet using the `range` or `sheet_name` column:
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  range = 'Students';
+```
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  sheet_name = 'Students';
+```
+
+### Query a range of cells
 
 ```sql
 select
@@ -17,33 +57,9 @@ where
   range = 'Students!B1:C2';
 ```
 
-### List all cells in a column
+### Query a specific cell
 
-```sql
-select
-  sheet_name,
-  cell,
-  value
-from
-  googlesheets_cell
-where
-  range = 'Students!A:A';
-```
-
-### List all cells in a row
-
-```sql
-select
-  sheet_name,
-  cell,
-  value
-from
-  googlesheets_cell
-where
-  range = 'Students!1:1';
-```
-
-### Get a specific cell
+You can query a specific cell's information using the `range` column:
 
 ```sql
 select
@@ -56,7 +72,7 @@ where
   range = 'Students!A2';
 ```
 
-### Get a specific cell using `row` and `col`
+Or with the `row` and `col` columns:
 
 ```sql
 select
@@ -71,7 +87,67 @@ where
   and col = 'A';
 ```
 
-### List all cells with hyperlink information
+### Query cells in a row or column
+
+Similar to the examples above, you can also query a specific row or column using the `range` column:
+
+#### Get a specific row
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  range = 'Students!1:1';
+```
+
+#### Get a specific column
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  range = 'Students!A:A';
+```
+
+Or using the `row` and `col` columns:
+
+#### Get a specific row
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  sheet_name = 'Students'
+  and row = 1;
+```
+
+#### Get a specific column
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  sheet_name = 'Students'
+  and col = 'A';
+```
+
+### List cells with hyperlink information
 
 ```sql
 select
@@ -86,7 +162,7 @@ where
   and hyperlink is not null;
 ```
 
-### List all cells with formula
+### List cells with a formula
 
 ```sql
 select
@@ -101,7 +177,7 @@ where
   and formula is not null;
 ```
 
-### List cells with formula parse error
+### List cells with formula parse errors
 
 ```sql
 select
@@ -118,6 +194,8 @@ where
 ```
 
 ### Create a pivot table using cells within a specific range
+
+You can use the cell data to build a more readable table using pivot tables:
 
 ```sql
 with cells as (

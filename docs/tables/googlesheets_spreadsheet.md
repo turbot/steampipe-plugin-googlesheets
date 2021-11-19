@@ -37,7 +37,7 @@ select
   name as spreadsheet_name,
   web_view_link,
   case
-    when capabilities -> 'canEdit' is null then false 
+    when capabilities -> 'canEdit' is null then false
     else (capabilities ->> 'canEdit')::boolean
   end as can_edit
 from

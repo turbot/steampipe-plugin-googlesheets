@@ -33,16 +33,14 @@ where
 +------------+------+--------------------------+
 | sheet_name | cell | value                    |
 +------------+------+--------------------------+
-| Students   | E1   | Home State               |
-| Students   | F1   | Major                    |
+| Students   | E1   | Major                    |
+| Students   | F1   | Extracurricular Activity |
+| Students   | H1   | GPA                      |
+| Students   | D1   | Home State               |
 | Students   | B1   | ID                       |
-| Students   | H1   | Mentor                   |
-| Students   | D1   | Class Level              |
-| Students   | C1   | Gender                   |
-| Students   | I1   | CGPA                     |
-| Students   | G1   | Extracurricular Activity |
-| Students   | J1   | Percentage               |
+| Students   | C1   | Class Level              |
 | Students   | A1   | Student Name             |
+| Students   | G1   | Mentor                   |
 +------------+------+--------------------------+
 ```
 
@@ -80,8 +78,8 @@ connection "googlesheets" {
   # 1. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
   # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
   # credentials = "/path/to/my/creds.json"
-  
-  # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs. 
+
+  # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs.
   # impersonated_user_email = "username@domain.com"
 
   # 2. To authenticate using OAuth 2.0, specify a client secret file
