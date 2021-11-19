@@ -198,35 +198,3 @@ select
 from
   "Books";
 ```
-
-### Querying a specific row using pivot table
-
-```sql
-with marks as (
-  select
-    "Student Name",
-    "Exam",
-    "Score"
-  from
-    "Marks"
-  order by 1,2
-),
-pivot_marks as (
-  select
-    "Student Name" as student_name,
-    max(case when "Exam" = '1' then "Score" else null end) as exam_1,
-    max(case when "Exam" = '2' then "Score" else null end) as exam_2,
-    max(case when "Exam" = '3' then "Score" else null end) as exam_3,
-    max(case when "Exam" = '4' then "Score" else null end) as exam_4
-  from
-    marks
-  group by
-    "Student Name"
-)
-select
-  *
-from
-  pivot_marks
-where
-  student_name = 'Bob';
-```

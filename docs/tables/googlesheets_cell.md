@@ -116,3 +116,43 @@ where
   and formula is not null
   and value in ('#N/A', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#ERROR!', '#NULL!');
 ```
+
+### Create a pivot table using cells within a specific range
+
+```sql
+with cells as (
+  select
+    *
+  from
+    googlesheets_cell
+  where
+    range = 'Marks!A2:C9'
+  order by row, col
+),
+pivot_cells as (
+  select
+    row,
+    max(case when col = 'A' then value else null end) as name,
+    max(case when col = 'B' then value else null end) as exam,
+    max(case when col = 'C' then value else null end) as score
+  from
+    cells
+  group by row
+),
+pivot_marks as (
+  select
+    name,
+    max(case when exam = '1' then score else null end) as exam_1,
+    max(case when exam = '2' then score else null end) as exam_2,
+    max(case when exam = '3' then score else null end) as exam_3,
+    max(case when exam = '4' then score else null end) as exam_4
+  from
+    pivot_cells
+  group by
+    name
+)
+select
+  *
+from
+  pivot_marks;
+```

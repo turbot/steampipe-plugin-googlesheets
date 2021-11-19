@@ -205,20 +205,23 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 						// If a range has been passed to query a particular range, `StartRow` will indicate the start row index(zero-based)
 						rowCount = rowCount + int(i.StartRow)
 						for colCount, value := range row.Values {
+							var rowInfo cellInfo
+
 							// If a range has been passed to query a particular range, `StartColumn` will indicate the start column index(zero-based)
 							colCount = colCount + int(i.StartColumn)
 							mergeRow, mergeColumn, parentRow, parentColumn := findMergeCells(sheet.Merges, int64(rowCount+1), int64(colCount+1))
 							if mergeRow != nil && mergeColumn != nil { // Merge cell
 								if len(i.RowData) > int(*parentRow) && i.RowData[*parentRow-1] != nil && i.RowData[*parentRow-1].Values[*parentColumn-1] != nil {
 									parentData := i.RowData[*parentRow-1].Values[*parentColumn-1]
-									rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, parentData)
-									d.StreamListItem(ctx, rowInfo)
+									rowInfo = getCellInfo(sheet.Properties.Title, rowCount, colCount, parentData)
 								}
 							} else if value.UserEnteredValue != nil && value.UserEnteredValue.FormulaValue != nil { // Image in cell
-								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
-								d.StreamListItem(ctx, rowInfo)
+								rowInfo = getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
 							} else if value.FormattedValue != "" {
-								rowInfo := getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
+								rowInfo = getCellInfo(sheet.Properties.Title, rowCount, colCount, value)
+							}
+
+							if rowInfo.Value != "" {
 								d.StreamListItem(ctx, rowInfo)
 							}
 						}
