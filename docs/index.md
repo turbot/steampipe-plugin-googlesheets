@@ -85,7 +85,7 @@ connection "googlesheets" {
   # If `token_path` is not specified in a connection, credentials will be loaded from:
   #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
   #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
-  # token_path = "~/.config/gcloud/application_default_credentials.json"
+  # token_path = "/Users/myuser/.config/gcloud/application_default_credentials.json"
 
   # 2. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
   # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.

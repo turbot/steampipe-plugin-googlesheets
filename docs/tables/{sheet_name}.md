@@ -10,12 +10,11 @@ For instance, if using the following configuration:
 connection "googlesheets" {
   plugin = "googlesheets"
 
-  credentials             = "/Users/myuser/keys/my-key.json"
-  impersonated_user_email = "myuser@example.com"
-
   # Google Sheets Plugin - Sample School Data
   spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
   sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+
+  token_path = "/Users/myuser/gcloud/application_default_credentials.json"
 }
 ```
 

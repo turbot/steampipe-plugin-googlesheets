@@ -3,8 +3,6 @@
 Query cell data from sheets in a Google Sheets spreadsheet. Cells that have no
 data, i.e., no value or formula, will not be returned.
 
-When specifying the `range` key qual, you can use use [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1) or [R1C1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-2).
-
 ## Examples
 
 ### Query cells in all sheets
@@ -20,18 +18,7 @@ from
 
 ### Query cells in a specific sheet
 
-You can query all cells from a specific sheet using the `range` or `sheet_name` column:
-
-```sql
-select
-  sheet_name,
-  cell,
-  value
-from
-  googlesheets_cell
-where
-  range = 'Students';
-```
+You can query all cells from a specific sheet using the `sheet_name` column:
 
 ```sql
 select
@@ -46,6 +33,8 @@ where
 
 ### Query a range of cells
 
+Using the [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1), you can query specific cells using the `range` column:
+
 ```sql
 select
   sheet_name,
@@ -59,20 +48,7 @@ where
 
 ### Query a specific cell
 
-You can query a specific cell's information using the `range` column:
-
-```sql
-select
-  sheet_name,
-  cell,
-  value
-from
-  googlesheets_cell
-where
-  range = 'Students!A2';
-```
-
-Or with the `row` and `col` columns:
+You can query a specific cell with the `sheet_name`, `row`, and `col` columns:
 
 ```sql
 select
@@ -87,9 +63,7 @@ where
   and col = 'A';
 ```
 
-### Query cells in a row or column
-
-Similar to the examples above, you can also query a specific row or column using the `range` column:
+Or you can use [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1) with the `range` column:
 
 ```sql
 select
@@ -99,21 +73,12 @@ select
 from
   googlesheets_cell
 where
-  range = 'Students!1:1';
+  range = 'Students!A2';
 ```
 
-```sql
-select
-  sheet_name,
-  cell,
-  value
-from
-  googlesheets_cell
-where
-  range = 'Students!A:A';
-```
+### Query cells in a row
 
-Or using the `row` and `col` columns:
+Similar to the examples above, you can also query a specific row using the `sheet_name` and `row` columns:
 
 ```sql
 select
@@ -127,6 +92,23 @@ where
   and row = 1;
 ```
 
+Or by using [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1) with the `range` column:
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  range = 'Students!1:1';
+```
+
+### Query cells in a column
+
+Specific columns can also be queried using the `sheet_name` and `col` columns:
+
 ```sql
 select
   sheet_name,
@@ -137,6 +119,19 @@ from
 where
   sheet_name = 'Students'
   and col = 'A';
+```
+
+Or with [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1) and the `range` column:
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  range = 'Students!A:A';
 ```
 
 ### List cells with hyperlink information
@@ -185,44 +180,36 @@ where
   and value in ('#N/A', '#DIV/0!', '#VALUE!', '#REF!', '#NAME?', '#NUM!', '#ERROR!', '#NULL!');
 ```
 
-### Create a pivot table using cells within a specific range
+## Advanced examples
 
-You can use the cell data to build a more readable table using pivot tables:
+### Query cells in a specific sheet using `range`
+
+In [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1), just the sheet name can be passed in as the `range` to return all cells from that sheet:
 
 ```sql
-with cells as (
-  select
-    *
-  from
-    googlesheets_cell
-  where
-    range = 'Marks!A2:C9'
-  order by row, col
-),
-pivot_cells as (
-  select
-    row,
-    max(case when col = 'A' then value else null end) as name,
-    max(case when col = 'B' then value else null end) as exam,
-    max(case when col = 'C' then value else null end) as score
-  from
-    cells
-  group by row
-),
-pivot_marks as (
-  select
-    name,
-    max(case when exam = '1' then score else null end) as exam_1,
-    max(case when exam = '2' then score else null end) as exam_2,
-    max(case when exam = '3' then score else null end) as exam_3,
-    max(case when exam = '4' then score else null end) as exam_4
-  from
-    pivot_cells
-  group by
-    name
-)
 select
-  *
+  sheet_name,
+  cell,
+  value
 from
-  pivot_marks;
+  googlesheets_cell
+where
+  range = 'Students';
+```
+
+### Query cells using [R1C1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-2)
+
+In addition to [A1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-1), the `range` column also supports [R1C1 notation](https://developers.google.com/sheets/api/guides/concepts#expandable-2).
+
+For instance, to get the first five cells in the first column:
+
+```sql
+select
+  sheet_name,
+  cell,
+  value
+from
+  googlesheets_cell
+where
+  range = 'Students!R1C1:R5C1';
 ```
