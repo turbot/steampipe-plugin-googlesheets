@@ -62,9 +62,9 @@ steampipe plugin install googlesheets
 
 | Item        | Description |
 | :---------- | :---------- |
-| Credentials | 1. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/drive.readonly` OAuth 2.0 scope, so that the service account can access Google Sheet service.<br />2. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client). |
+| Credentials | 1. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client).<br />2. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/drive.readonly` OAuth 2.0 scope, so that the service account can access Google Sheet service. |
 | Radius      | Each connection represents a single Google spreadsheet. |
-| Resolution  | 1. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config.<br />2. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />3. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`). |
+| Resolution  | 1. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />2. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`).<br />3. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config. |
 
 ### Configuration
 
@@ -74,24 +74,25 @@ Installing the latest googlesheets plugin will create a config file (`~/.steampi
 connection "googlesheets" {
   plugin = "googlesheets"
 
+  # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
+  # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
+  # sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+
   # You may connect to Google Sheet using more than one option:
-  # 1. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
-  # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
-  # credentials = "/path/to/my/creds.json"
 
-  # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs.
-  # impersonated_user_email = "username@domain.com"
-
-  # 2. To authenticate using OAuth 2.0, specify a client secret file
+  # 1. To authenticate using OAuth 2.0, specify a client secret file
   # `token_path` - The path to a JSON credential file that contains Google application credentials. 
   # If `token_path` is not specified in a connection, credentials will be loaded from:
   #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
   #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
   # token_path = "~/.config/gcloud/application_default_credentials.json"
 
-  # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
-  # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
-  # sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+  # 2. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
+  # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
+  # credentials = "/path/to/my/creds.json"
+
+  # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs.
+  # impersonated_user_email = "username@domain.com"
 }
 ```
 

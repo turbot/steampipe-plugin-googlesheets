@@ -135,16 +135,23 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 	var credentialContent, tokenPath string
 	googleSheetsConfig := GetConfig(d.Connection)
 
-	// Return if no SpreadsheetID provided
+	// Return if no Spreadsheet ID provided
 	if *googleSheetsConfig.SpreadsheetId == "" {
 		return nil, errors.New("spreadsheet_id must be configured")
+	}
+
+	if googleSheetsConfig.TokenPath != nil {
+		tokenPath = *googleSheetsConfig.TokenPath
 	}
 
 	if googleSheetsConfig.Credentials != nil {
 		credentialContent = *googleSheetsConfig.Credentials
 	}
-	if googleSheetsConfig.TokenPath != nil {
-		tokenPath = *googleSheetsConfig.TokenPath
+
+	// If token path provided, authenticate using OAuth 2.0
+	if tokenPath != "" {
+		opts = append(opts, option.WithCredentialsFile(tokenPath))
+		return opts, nil
 	}
 
 	// If credential path provided, use domain-wide delegation
@@ -154,12 +161,6 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 			return nil, err
 		}
 		opts = append(opts, option.WithTokenSource(ts))
-		return opts, nil
-	}
-
-	// If token path provided, authenticate using OAuth 2.0
-	if tokenPath != "" {
-		opts = append(opts, option.WithCredentialsFile(tokenPath))
 		return opts, nil
 	}
 
