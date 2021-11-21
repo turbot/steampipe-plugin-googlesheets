@@ -1,7 +1,8 @@
-# Table: googlesheets_csv
+# Table: {sheet_name}
 
-Query sheet data from Google Sheets. A table is automatically created to
-represent each sheet mentioned in the configured `sheets`.
+Query cell data from sheets in a Google Sheets spreadsheet in CSV format. A
+table is automatically created to represent each sheet mentioned in the
+configured `sheets`.
 
 For instance, if using the following configuration:
 
