@@ -136,7 +136,7 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 	googleSheetsConfig := GetConfig(d.Connection)
 
 	// Return if no Spreadsheet ID provided
-	if *googleSheetsConfig.SpreadsheetId == "" {
+	if googleSheetsConfig.SpreadsheetId == nil {
 		return nil, errors.New("spreadsheet_id must be configured")
 	}
 
