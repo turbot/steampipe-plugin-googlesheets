@@ -25,10 +25,6 @@ This plugin will create 4 tables:
 - Marks
 - Students
 
-Note: A table is not created for the `Dashboard` sheet as it does not have any
-data in cell `A1` (please see notes below on requirements for creating a CSV
-table).
-
 For the tables that were created, these can be queried directly:
 
 ```sql
@@ -41,39 +37,12 @@ from
 Each of these tables will have the same column structure as the Google Sheet
 they were created from and all column values are returned as text data type.
 
-**NOTES:**
+Note: A table is not created for the `Dashboard` sheet as it does not have any
+data in cell `A1`. For more information on how tables are created, please see [Table Restrictions and Notes](#table-restrictions-and-notes).
 
-- CSV tables will only be created for sheets that have data in cell `A1`.
-- If a sheet's header row is missing some values, the table will use the column index for the column name.
-- If a sheet's header row has more than one column with same name, column indexes will be appended onto the end of duplicate columns.
-- If a sheet's header row has vertically merged cells, the table will use the merged cell's value for all affected cells and apply duplicate protection.
-
-For instance, the `Employees` table has the following header row:
-
-| A           | B             | C             | D       | E       | F        | G        | H | I            | J             |
-|-------------|---------------|---------------|---------|---------|----------|----------|---|--------------|---------------|
-| Employee ID | Employee Name | Profile Image | Contact | Contact | Birthday | Birthday |   | Joining Date | Days Employed |
-
-Running `.inspect "Employees"` then results in:
-
-```shell
-.inspect "Employees"
-
-+---------------+------+-------------+
-| column        | type | description |
-+---------------+------+-------------+
-| Birthday [F]  | text | Field 5.    |
-| Birthday [G]  | text | Field 6.    |
-| Contact       | text | Field 3.    |
-| Contact [E]   | text | Field 4.    |
-| Duration      | text | Field 8.    |
-| Employee ID   | text | Field 0.    |
-| Employee Name | text | Field 1.    |
-| J             | text | Field 9.    |
-| Joining Date  | text | Field 7.    |
-| Profile Image | text | Field 2.    |
-+---------------+------+-------------+
-```
+All examples below can be used with the [Google Sheets Plugin - Sample School
+Data](https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4)
+spreadsheet, which is a public spreadsheet maintained by the Steampipe team.
 
 ## Examples
 
@@ -155,4 +124,38 @@ select
   "Verified"::boolean as verified
 from
   "Books";
+```
+
+## Table Restrictions and Notes
+
+- CSV tables will only be created for sheets that have data in cell `A1`.
+- If a sheet's header row is missing some values, the table will use the column index for the column name.
+- If a sheet's header row has more than one column with same name, column indexes will be appended onto the end of duplicate columns.
+- If a sheet's header row has vertically merged cells, the table will use the merged cell's value for all affected cells and apply duplicate protection.
+
+For instance, the `Employees` table has the following header row:
+
+| A           | B             | C             | D       | E       | F + G    | H | I            | J             |
+|-------------|---------------|---------------|---------|---------|----------|---|--------------|---------------|
+| Employee ID | Employee Name | Profile Image | Contact | Contact | Birthday |   | Joining Date | Days Employed |
+
+Running `.inspect "Employees"` then results in:
+
+```shell
+.inspect "Employees"
+
++---------------+------+-------------+
+| column        | type | description |
++---------------+------+-------------+
+| Birthday [F]  | text | Field 5.    |
+| Birthday [G]  | text | Field 6.    |
+| Contact       | text | Field 3.    |
+| Contact [E]   | text | Field 4.    |
+| Days Employed | text | Field 9.    |
+| Employee ID   | text | Field 0.    |
+| Employee Name | text | Field 1.    |
+| H             | text | Field 7.    |
+| Joining Date  | text | Field 8.    |
+| Profile Image | text | Field 2.    |
++---------------+------+-------------+
 ```

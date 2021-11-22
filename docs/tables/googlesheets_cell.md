@@ -3,6 +3,10 @@
 Query cell data from sheets in a Google Sheets spreadsheet. Cells that have no
 data, i.e., no value or formula, will not be returned.
 
+All examples below can be used with the [Google Sheets Plugin - Sample School
+Data](https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4)
+spreadsheet, which is a public spreadsheet maintained by the Steampipe team.
+
 ## Examples
 
 ### Query cells in all sheets

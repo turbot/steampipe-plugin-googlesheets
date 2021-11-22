@@ -8,7 +8,7 @@ connection "googlesheets" {
   # You may connect to Google Sheet using more than one option:
 
   # 1. To authenticate using OAuth 2.0, specify a client secret file
-  # `token_path` - The path to a JSON credential file that contains Google application credentials. 
+  # `token_path` - The path to a JSON credential file that contains Google application credentials.
   # If `token_path` is not specified in a connection, credentials will be loaded from:
   #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
   #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
