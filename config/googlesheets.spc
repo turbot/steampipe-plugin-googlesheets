@@ -3,7 +3,9 @@ connection "googlesheets" {
 
   # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
   # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
-  # sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+
+  # If no sheets are specified, then all sheets will be retrieved
+  # sheets = ["Dashboard", "Students", "Books", "Marks", "Employees"]
 
   # You may connect to Google Sheet using more than one option:
 
