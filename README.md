@@ -19,17 +19,60 @@ steampipe plugin install googlesheets
 
 Configure your [credentials](https://hub.steampipe.io/plugins/turbot/googlesheets#credentials) and [config file](https://hub.steampipe.io/plugins/turbot/googlesheets#configuration).
 
-Run a query:
+Run steampipe:
+
+```shell
+steampipe query
+```
+
+Query all the sheets in your spreadsheet:
 
 ```sql
 select
-  sheet_name,
+  title
+from
+  googlesheets_sheet;
+```
+
+```
++-----------+
+| title     |
++-----------+
+| Marks     |
+| Students  |
+| Dashboard |
+| Books     |
+| Employees |
++-----------+
+```
+
+Query cell values for a given sheet:
+
+```sql
+select
   cell,
   value
 from
   googlesheets_cell
 where
-  range = 'Students!1:1';
+  sheet_name = 'Students';
+```
+
+```
++------+--------------+
+| cell | value        |
++------+--------------+
+| A1   | Student Name |
+| A2   | Alexandra    |
+| A3   | Andrew       |
+| A4   | Anna         |
+| A5   | Becky        |
+| B1   | ID           |
+| B2   | 1            |
+| B3   | 2            |
+| B4   | 3            |
+| B5   | 4            |
++------|--------------+
 ```
 
 ## Developing

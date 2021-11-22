@@ -16,32 +16,54 @@ og_image: "/images/plugins/turbot/googlesheets-social-graphic.png"
 
 [Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
 
-For example:
+Query all the sheets in your spreadsheet:
 
 ```sql
 select
-  sheet_name,
+  title
+from
+  googlesheets_sheet;
+```
+
+```
++-----------+
+| title     |
++-----------+
+| Marks     |
+| Students  |
+| Dashboard |
+| Books     |
+| Employees |
++-----------+
+```
+
+Query cell values for a given sheet:
+
+```sql
+select
   cell,
   value
 from
   googlesheets_cell
 where
-  range = 'Students!1:1';
+  sheet_name = 'Students';
 ```
 
-```sh
-+------------+------+--------------------------+
-| sheet_name | cell | value                    |
-+------------+------+--------------------------+
-| Students   | E1   | Major                    |
-| Students   | F1   | Extracurricular Activity |
-| Students   | H1   | GPA                      |
-| Students   | D1   | Home State               |
-| Students   | B1   | ID                       |
-| Students   | C1   | Class Level              |
-| Students   | A1   | Student Name             |
-| Students   | G1   | Mentor                   |
-+------------+------+--------------------------+
+```
++------+--------------+
+| cell | value        |
++------+--------------+
+| A1   | Student Name |
+| A2   | Alexandra    |
+| A3   | Andrew       |
+| A4   | Anna         |
+| A5   | Becky        |
+| B1   | ID           |
+| B2   | 1            |
+| B3   | 2            |
+| B4   | 3            |
+| B5   | 4            |
++------|--------------+
 ```
 
 ## Documentation
