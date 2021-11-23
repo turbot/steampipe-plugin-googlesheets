@@ -84,6 +84,7 @@ steampipe plugin install googlesheets
 
 | Item        | Description |
 | :---------- | :---------- |
+| APIs | 1. Create or select a project. <br/> 2. Visit the [API dashboard](https://console.cloud.google.com/apis/dashboard). <br/> 3. Click `Enable APIs and Services`. <br/> 4. Search for `drive`. <br/> 5. Select `Google Drive API`. <br/> 6. Click `Enable` to allow your project to use the Google Drive API. 
 | Credentials | 1. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client).<br />2. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/drive.readonly` OAuth 2.0 scope, so that the service account can access Google Sheet service. |
 | Radius      | Each connection represents a single Google spreadsheet. |
 | Resolution  | 1. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />2. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`).<br />3. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config. |
