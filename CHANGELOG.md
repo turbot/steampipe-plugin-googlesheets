@@ -1,3 +1,11 @@
+## v0.1.0 [2021-12-08]
+
+_Enhancements_
+
+- Recompile plugn with Go version 1.17 ([#11](https://github.com/turbot/steampipe-plugin-googlesheets/pull/11))
+- Recompiled plugin with [steampipe-plugin-sdk v1.8.2](https://github.com/turbot/steampipe-plugin-sdk/blob/main/CHANGELOG.md#v182--2021-11-22) ([#10](https://github.com/turbot/steampipe-plugin-googlesheets/pull/10))
+- `docs/index.md` now includes Google Drive and Sheets API scope information ([#9](https://github.com/turbot/steampipe-plugin-googlesheets/pull/9))
+
 ## v0.0.2 [2021-11-22]
 
 _Bug fixes_
