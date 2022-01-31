@@ -25,7 +25,7 @@ from
   googlesheets_sheet;
 ```
 
-```
+```sh
 +-----------+
 | title     |
 +-----------+
@@ -37,7 +37,64 @@ from
 +-----------+
 ```
 
-Query cell values for a given sheet:
+A table is automatically created to represent each sheet mentioned in the
+configured `sheets` config argument.
+
+For instance, if using the following configuration:
+
+```hcl
+connection "googlesheets" {
+  plugin = "googlesheets"
+
+  # Google Sheets Plugin - Sample School Data
+  spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
+  sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+}
+```
+
+To get details for a specific table, inspect it by name:
+
+```shell
+.inspect "Students"
++--------------------------+------+-------------+
+| column                   | type | description |
++--------------------------+------+-------------+
+| Class Level              | text | Field 2.    |
+| Extracurricular Activity | text | Field 5.    |
+| GPA                      | text | Field 7.    |
+| Home State               | text | Field 3.    |
+| ID                       | text | Field 1.    |
+| Major                    | text | Field 4.    |
+| Mentor                   | text | Field 6.    |
+| Student Name             | text | Field 0.    |
++--------------------------+------+-------------+
+```
+
+You can query data from the `Students` sheet using the sheet's column names:
+
+```sql
+select
+  "Student Name",
+  "Class Level",
+  "GPA"
+from
+  "Students";
+```
+
+```sh
++--------------+-------------+------+
+| Student Name | Class Level | GPA  |
++--------------+-------------+------+
+| Andrew       | Freshman    | 3.50 |
+| Alexandra    | Senior      | 3.20 |
+| Karen        | Sophomore   | 3.90 |
+| Edward       | Junior      | 3.40 |
+| Ellen        | Freshman    | 2.90 |
+| Becky        | Sophomore   | 3.10 |
++--------------+-------------+------+
+```
+
+You can also query data from a sheet by cell address:
 
 ```sql
 select
@@ -49,7 +106,7 @@ where
   sheet_name = 'Students';
 ```
 
-```
+```sh
 +------+--------------+
 | cell | value        |
 +------+--------------+
@@ -87,7 +144,7 @@ steampipe plugin install googlesheets
 | APIs | 1. Go to the [Google API Console](https://console.cloud.google.com/apis/dashboard). <br/> 2. Select the project that contains your credentials. <br/> 3. Click `Enable APIs and Services`. <br/> 4. Enable both the `Google Drive API` and `Google Sheets API`. 
 | Credentials | 1. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client).<br />2. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/drive.readonly` and `https://www.googleapis.com/auth/spreadsheets.readonly` OAuth 2.0 scopes. |
 | Radius      | Each connection represents a single Google spreadsheet. |
-| Resolution  | 1. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />2. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`).<br />3. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config. |
+| Resolution  | 1. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config.<br />2. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />3. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`). |
 
 ### Configuration
 
@@ -105,19 +162,19 @@ connection "googlesheets" {
 
   # You may connect to Google Sheet using more than one option:
 
-  # 1. To authenticate using OAuth 2.0, specify a client secret file
-  # `token_path` - The path to a JSON credential file that contains Google application credentials. 
-  # If `token_path` is not specified in a connection, credentials will be loaded from:
-  #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
-  #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
-  # token_path = "/Users/myuser/.config/gcloud/application_default_credentials.json"
-
-  # 2. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
+  # 1. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
   # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
   # credentials = "/path/to/my/creds.json"
 
   # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs.
   # impersonated_user_email = "username@domain.com"
+
+  # 2. To authenticate using OAuth 2.0, specify a client secret file
+  # `token_path` - The path to a JSON credential file that contains Google application credentials. 
+  # If `token_path` is not specified in a connection, credentials will be loaded from:
+  #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
+  #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
+  # token_path = "/Users/myuser/.config/gcloud/application_default_credentials.json"
 }
 ```
 
