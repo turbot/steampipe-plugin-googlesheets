@@ -37,7 +37,64 @@ from
 +-----------+
 ```
 
-Query cell values for a given sheet:
+A table is automatically created to represent each sheet mentioned in the
+configured `sheets` config argument.
+
+For instance, if using the following configuration:
+
+```hcl
+connection "googlesheets" {
+  plugin = "googlesheets"
+
+  # Google Sheets Plugin - Sample School Data
+  spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
+  sheets         = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+}
+```
+
+To get details for a specific table, inspect it by name:
+
+```shell
+.inspect "Students"
++--------------------------+------+-------------+
+| column                   | type | description |
++--------------------------+------+-------------+
+| Class Level              | text | Field 2.    |
+| Extracurricular Activity | text | Field 5.    |
+| GPA                      | text | Field 7.    |
+| Home State               | text | Field 3.    |
+| ID                       | text | Field 1.    |
+| Major                    | text | Field 4.    |
+| Mentor                   | text | Field 6.    |
+| Student Name             | text | Field 0.    |
++--------------------------+------+-------------+
+```
+
+You can query data from the `Students` sheet using the sheet's column names:
+
+```sql
+select
+  "Student Name",
+  "Class Level",
+  "GPA"
+from
+  "Students";
+```
+
+```sh
++--------------+-------------+------+
+| Student Name | Class Level | GPA  |
++--------------+-------------+------+
+| Andrew       | Freshman    | 3.50 |
+| Alexandra    | Senior      | 3.20 |
+| Karen        | Sophomore   | 3.90 |
+| Edward       | Junior      | 3.40 |
+| Ellen        | Freshman    | 2.90 |
+| Becky        | Sophomore   | 3.10 |
++--------------+-------------+------+
+```
+
+You can also query data from a sheet by cell address:
 
 ```sql
 select
@@ -64,37 +121,6 @@ where
 | B4   | 3            |
 | B5   | 4            |
 +------|--------------+
-```
-
-You can also query cell data from sheets in a spreadsheet in CSV format. A
-table is automatically created to represent each sheet mentioned in the
-configured `sheets`.
-
-For instance, if using the following configuration:
-
-```sh
-connection "googlesheets" {
-  plugin = "googlesheets"
-  ...
-  sheets = ["Employees"]
-}
-```
-
-and, the `Employees` sheet has following data:
-
-| Employee ID | Employee Name | Email |
-| - | - | - |
-| ABC001 | Jack | jack001@xyz.com |
-| ABC002 | Jimmy | jimmy002@xyz.com |
-| ABC003 | Alex | alex003@xyz.com |
-
-The plugin will create a table named `Employees`, and an be queried directly:
-
-```sql
-select
-  *
-from
-  "Employees";
 ```
 
 ## Documentation
