@@ -1,3 +1,9 @@
+## v0.1.1 [2022-01-31]
+
+_Bug fixes_
+
+- Fixed: Credentials in the `credentials` argument now take precedence over those in the `token_path` argument ([#15](https://github.com/turbot/steampipe-plugin-googlesheets/pull/15))
+
 ## v0.1.0 [2021-12-08]
 
 _Enhancements_
