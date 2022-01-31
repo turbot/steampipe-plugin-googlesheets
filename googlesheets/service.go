@@ -148,12 +148,6 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 		credentialContent = *googleSheetsConfig.Credentials
 	}
 
-	// If token path provided, authenticate using OAuth 2.0
-	if tokenPath != "" {
-		opts = append(opts, option.WithCredentialsFile(tokenPath))
-		return opts, nil
-	}
-
 	// If credential path provided, use domain-wide delegation
 	if credentialContent != "" {
 		ts, err := getTokenSource(ctx, d)
@@ -161,6 +155,12 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 			return nil, err
 		}
 		opts = append(opts, option.WithTokenSource(ts))
+		return opts, nil
+	}
+
+	// If token path provided, authenticate using OAuth 2.0
+	if tokenPath != "" {
+		opts = append(opts, option.WithCredentialsFile(tokenPath))
 		return opts, nil
 	}
 
