@@ -196,8 +196,8 @@ this sample spreadsheet.
 
 You can use client secret credentials to protect the user's data by only granting tokens to authorized requestors. Use following steps to configure credentials:
 
-- [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/create-credentials#configure_the_oauth_consent_screen).
-- [Create an OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#create_a_oauth_client_id_credential) with the application type `Desktop app`, and download the client secret JSON file.
+- [Configure the OAuth consent screen](https://developers.google.com/workspace/guides/configure-oauth-consent).
+- [Create an OAuth client ID credential](https://developers.google.com/workspace/guides/create-credentials#desktop-app) with the application type `Desktop app`, and download the client secret JSON file.
 - Wherever you have the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) installed, run the following command with the correct client secret JSON file parameters:
 
   ```sh
