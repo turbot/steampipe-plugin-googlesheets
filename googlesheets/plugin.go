@@ -96,16 +96,18 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 					mergeRow, mergeColumn, _, parentColumn := findMergeCells(mergeCellInfo, int64(1), int64(idx+1))
 					if mergeRow != nil && mergeColumn != nil { // Merge cell
 						parentData := data.Values[0][*parentColumn-1]
+						parentData = strings.ReplaceAll(parentData.(string), "\"", "")
 						spreadsheetHeaders[len(spreadsheetHeaders)-1] = fmt.Sprintf("%s [%s]", spreadsheetHeaders[len(spreadsheetHeaders)-1], intToLetters(idx))
 						spreadsheetHeaders = append(spreadsheetHeaders, fmt.Sprintf("%s [%s]", parentData.(string), intToLetters(idx+1)))
 					} else if len(i.(string)) == 0 {
 						columnName := intToLetters(idx + 1) // since index in for is zero-based
 						spreadsheetHeaders = append(spreadsheetHeaders, columnName)
 					} else {
-						if helpers.StringSliceContains(spreadsheetHeaders, i.(string)) {
-							spreadsheetHeaders = append(spreadsheetHeaders, fmt.Sprintf("%s [%s]", i.(string), intToLetters(idx+1)))
+						str := strings.ReplaceAll(i.(string), "\"", "")
+						if helpers.StringSliceContains(spreadsheetHeaders, str) {
+							spreadsheetHeaders = append(spreadsheetHeaders, fmt.Sprintf("%s [%s]", str, intToLetters(idx+1)))
 						} else {
-							spreadsheetHeaders = append(spreadsheetHeaders, i.(string))
+							spreadsheetHeaders = append(spreadsheetHeaders, str)
 						}
 					}
 				}
