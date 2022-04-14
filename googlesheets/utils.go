@@ -69,9 +69,9 @@ func intToLetters(colIndex int) (letter string) {
 	colIndex--
 	if firstLetter := colIndex / 26; firstLetter > 0 {
 		letter += intToLetters(firstLetter)
-		letter += string('A' + colIndex%26)
+		letter += string(rune('A' + colIndex%26))
 	} else {
-		letter += string('A' + colIndex)
+		letter += string(rune('A' + colIndex))
 	}
 
 	return
