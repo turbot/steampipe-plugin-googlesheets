@@ -3,7 +3,7 @@ package googlesheets
 import (
 	"context"
 
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
 )
 
 func listSpreadsheetWithPath(ctx context.Context, p *plugin.Plugin, sheetName string) func(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
