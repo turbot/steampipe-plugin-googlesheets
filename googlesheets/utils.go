@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 )
 
 // Returns the ID of the current working spreadsheet
