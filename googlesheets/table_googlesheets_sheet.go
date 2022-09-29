@@ -173,7 +173,7 @@ func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetID(ctx, d)
 
 	req := svc.Spreadsheets.Get(spreadsheetID)
 
@@ -197,6 +197,6 @@ func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 }
 
 func spreadsheetID(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetID(ctx, d)
 	return spreadsheetID, nil
 }

@@ -216,7 +216,7 @@ func listGoogleSheetSpreadsheet(ctx context.Context, d *plugin.QueryData, _ *plu
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetID(ctx, d)
 
 	resp, err := svc.Files.Get(spreadsheetID).Fields("*").Context(ctx).Do()
 	if err != nil {

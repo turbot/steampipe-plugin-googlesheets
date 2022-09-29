@@ -11,6 +11,8 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 )
 
+var d *plugin.QueryData
+
 // Plugin creates this (googlesheets) plugin
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
@@ -29,7 +31,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 // Map of spreadsheet headers along with the sheet name
 var googleSpreadsheetHeadersMap = map[string][]string{}
 
-func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+func PluginTables(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
 	// Initialize tables
 	tables := map[string]*plugin.Table{}
 
@@ -41,10 +43,10 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	/* Dynamic tables */
 
 	// Get the list of sheets to be retrieved from the spreadsheet
-	googleSheetsConfig := GetConfig(p.Connection)
+	googleSheetsConfig := GetConfig(d.Connection)
 
 	// Get the headers along with sheet name
-	availableSheets, err := getSpreadsheets(ctx, p)
+	availableSheets, err := getSpreadsheets(ctx, d.Table.Plugin)
 	if err != nil {
 		return tables, nil
 	}
@@ -58,7 +60,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 	}
 
 	// Get spreadsheet details
-	spreadsheetData, err := getSpreadsheetHeaders(ctx, p, validSheets)
+	spreadsheetData, err := getSpreadsheetHeaders(ctx, d.Table.Plugin, validSheets)
 	if err != nil {
 		return tables, nil
 	}
@@ -90,7 +92,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 
 			var spreadsheetHeaders []string
 			if sheetName == str {
-				mergeCellInfo, _ := getMergeCells(ctx, p, sheetName)
+				mergeCellInfo, _ := getMergeCells(ctx, d.Table.Plugin, sheetName)
 				maxColsLength := getMaxLength(data.Values)
 				for idx, i := range data.Values[0] {
 					mergeRow, mergeColumn, _, parentColumn := findMergeCells(mergeCellInfo, int64(1), int64(idx+1))
@@ -139,7 +141,7 @@ func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Tab
 					Name:        sheetName,
 					Description: fmt.Sprintf("Retrieves data from %s.", sheetName),
 					List: &plugin.ListConfig{
-						Hydrate: listSpreadsheetWithPath(ctx, p, sheetName),
+						Hydrate: listSpreadsheetWithPath(ctx, d.Table.Plugin, sheetName),
 					},
 					Columns: cols,
 				}

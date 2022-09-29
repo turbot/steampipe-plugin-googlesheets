@@ -12,20 +12,20 @@ import (
 )
 
 // Returns the ID of the current working spreadsheet
-func getSpreadsheetID(_ context.Context, p *plugin.Plugin) string {
+func getSpreadsheetID(_ context.Context, d *plugin.QueryData) string {
 	spreadsheetCacheKey := "googlesheets.spreadsheetID"
-	if cachedData, ok := p.ConnectionManager.Cache.Get(spreadsheetCacheKey); ok {
+	if cachedData, ok := d.ConnectionManager.Cache.Get(spreadsheetCacheKey); ok {
 		return cachedData.(string)
 	}
 
-	googleSheetsConfig := GetConfig(p.Connection)
+	googleSheetsConfig := GetConfig(d.Connection)
 
 	var spreadsheetID string
 	if googleSheetsConfig.SpreadsheetId != nil {
 		spreadsheetID = *googleSheetsConfig.SpreadsheetId
 	}
 
-	p.ConnectionManager.Cache.Set(spreadsheetCacheKey, spreadsheetID)
+	d.ConnectionManager.Cache.Set(spreadsheetCacheKey, spreadsheetID)
 
 	return spreadsheetID
 }

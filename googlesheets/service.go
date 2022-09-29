@@ -13,6 +13,8 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 )
 
+var pluginData *plugin.QueryData
+
 // Returns headers of a sheet in given spreadsheet
 func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.ValueRange, error) {
 	// To get config arguments from plugin config file
@@ -28,7 +30,7 @@ func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []s
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d)
+	spreadsheetID := getSpreadsheetID(ctx, pluginData)
 
 	resp, err := svc.Spreadsheets.Values.BatchGet(spreadsheetID).ValueRenderOption("FORMATTED_VALUE").Ranges(sheetNames...).Fields(googleapi.Field("valueRanges")).Context(ctx).Do()
 	if err != nil {
@@ -54,7 +56,7 @@ func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
 	}
 
 	// Read spreadsheetID from config
-	spreadsheetID := getSpreadsheetID(ctx, d)
+	spreadsheetID := getSpreadsheetID(ctx, pluginData)
 
 	// Get the spreadsheets
 	resp, err := svc.Spreadsheets.Get(spreadsheetID).Fields(googleapi.Field("sheets(properties.title)")).Context(ctx).Do()
@@ -85,7 +87,7 @@ func getMergeCells(ctx context.Context, d *plugin.Plugin, sheetName string) ([]*
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d)
+	spreadsheetID := getSpreadsheetID(ctx, pluginData)
 
 	resp, err := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Ranges(sheetName).Fields(googleapi.Field("sheets(merges)")).Context(ctx).Do()
 	if err != nil {
@@ -114,7 +116,7 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []stri
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d)
+	spreadsheetID := getSpreadsheetID(ctx, pluginData)
 
 	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData(values(formattedValue))),merges)"))
 	if len(sheetNames) > 0 {
@@ -133,7 +135,7 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 
 	// Get credential file path, and user to impersonate from config (if mentioned)
 	var credentialContent, tokenPath string
-	googleSheetsConfig := GetConfig(d.Connection)
+	googleSheetsConfig := GetConfig(pluginData.Connection)
 
 	// Return if no Spreadsheet ID provided
 	if googleSheetsConfig.SpreadsheetId == nil {
@@ -173,13 +175,13 @@ func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, 
 
 	// have we already created and cached the token?
 	cacheKey := "googlesheets.token_source"
-	if ts, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+	if ts, ok := pluginData.ConnectionManager.Cache.Get(cacheKey); ok {
 		return ts.(oauth2.TokenSource), nil
 	}
 
 	// Get credential file path, and user to impersonate from config (if mentioned)
 	var impersonateUser string
-	googleSheetsConfig := GetConfig(d.Connection)
+	googleSheetsConfig := GetConfig(pluginData.Connection)
 
 	// Read credential from JSON string, or from the given path
 	credentialContent, err := pathOrContents(*googleSheetsConfig.Credentials)
@@ -209,7 +211,7 @@ func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, 
 	ts := config.TokenSource(ctx)
 
 	// cache the token source
-	d.ConnectionManager.Cache.Set(cacheKey, ts)
+	pluginData.ConnectionManager.Cache.Set(cacheKey, ts)
 
 	return ts, nil
 }
