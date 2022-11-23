@@ -7,9 +7,9 @@ import (
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/sheets/v4"
 
-	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 type cellInfo = struct {
@@ -135,7 +135,7 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData,startColumn,startRow),merges)"))
 
 	// Additional filters
-	quals := d.KeyColumnQuals
+	quals := d.EqualsQuals
 
 	/*
 		 * If `range` qual is defined, API will use that filter directly

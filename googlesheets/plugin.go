@@ -6,12 +6,10 @@ import (
 	"strings"
 
 	"github.com/turbot/go-kit/helpers"
-	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
-
-var d *plugin.QueryData
 
 // Plugin creates this (googlesheets) plugin
 func Plugin(ctx context.Context) *plugin.Plugin {
@@ -31,7 +29,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 // Map of spreadsheet headers along with the sheet name
 var googleSpreadsheetHeadersMap = map[string][]string{}
 
-func PluginTables(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
+func PluginTables(ctx context.Context, d *plugin.TableMapData) (map[string]*plugin.Table, error) {
 	// Initialize tables
 	tables := map[string]*plugin.Table{}
 
@@ -46,7 +44,7 @@ func PluginTables(ctx context.Context, connection *plugin.Connection) (map[strin
 	googleSheetsConfig := GetConfig(d.Connection)
 
 	// Get the headers along with sheet name
-	availableSheets, err := getSpreadsheets(ctx, d.Table.Plugin)
+	availableSheets, err := getSpreadsheets(ctx, pluginData.Table.Plugin)
 	if err != nil {
 		return tables, nil
 	}
@@ -60,7 +58,7 @@ func PluginTables(ctx context.Context, connection *plugin.Connection) (map[strin
 	}
 
 	// Get spreadsheet details
-	spreadsheetData, err := getSpreadsheetHeaders(ctx, d.Table.Plugin, validSheets)
+	spreadsheetData, err := getSpreadsheetHeaders(ctx, pluginData.Table.Plugin, validSheets)
 	if err != nil {
 		return tables, nil
 	}
@@ -92,7 +90,7 @@ func PluginTables(ctx context.Context, connection *plugin.Connection) (map[strin
 
 			var spreadsheetHeaders []string
 			if sheetName == str {
-				mergeCellInfo, _ := getMergeCells(ctx, d.Table.Plugin, sheetName)
+				mergeCellInfo, _ := getMergeCells(ctx, pluginData.Table.Plugin, sheetName)
 				maxColsLength := getMaxLength(data.Values)
 				for idx, i := range data.Values[0] {
 					mergeRow, mergeColumn, _, parentColumn := findMergeCells(mergeCellInfo, int64(1), int64(idx+1))
@@ -141,7 +139,7 @@ func PluginTables(ctx context.Context, connection *plugin.Connection) (map[strin
 					Name:        sheetName,
 					Description: fmt.Sprintf("Retrieves data from %s.", sheetName),
 					List: &plugin.ListConfig{
-						Hydrate: listSpreadsheetWithPath(ctx, d.Table.Plugin, sheetName),
+						Hydrate: listSpreadsheetWithPath(ctx, pluginData.Table.Plugin, sheetName),
 					},
 					Columns: cols,
 				}

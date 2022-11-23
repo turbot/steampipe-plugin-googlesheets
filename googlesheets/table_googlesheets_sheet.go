@@ -5,9 +5,9 @@ import (
 
 	"google.golang.org/api/sheets/v4"
 
-	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 //// TABLE DEFINITION
@@ -178,8 +178,8 @@ func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 	req := svc.Spreadsheets.Get(spreadsheetID)
 
 	// Additional filters
-	if d.KeyColumnQuals["title"] != nil {
-		req.Ranges(d.KeyColumnQuals["title"].GetStringValue())
+	if d.EqualsQuals["title"] != nil {
+		req.Ranges(d.EqualsQuals["title"].GetStringValue())
 	}
 
 	resp, err := req.Context(ctx).Do()
