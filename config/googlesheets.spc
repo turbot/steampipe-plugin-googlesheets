@@ -10,8 +10,13 @@ connection "googlesheets" {
   # You may connect to Google Sheet using more than one option:
 
   # 1. To authenticate using domain-wide delegation, specify a service account credential file and the user email for impersonation
-  # `credentials` - Either the path to a JSON credential file that contains Google application credentials, or the contents of a service account key file in JSON format.
-  # credentials = "/path/to/my/creds.json"
+  # `credentials` - Either the path to a JSON credential file that contains Google application credentials,
+  # or the contents of a service account key file in JSON format. If `credentials` is not specified in a connection,
+  # credentials will be loaded from:
+  #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
+  #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
+  #   - The path specified for the credentials.json file ("/path/to/my/creds.json")
+  # credentials = "~/.config/gcloud/application_default_credentials.json"
 
   # `impersonated_user_email` - The email (string) of the user which should be impersonated. Needs permissions to access the Admin APIs.
   # impersonated_user_email = "username@domain.com"
