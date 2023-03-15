@@ -117,7 +117,7 @@ func tableGoogleSheetsCell(_ context.Context) *plugin.Table {
 
 func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
-	opts, err := getSessionConfig(ctx, d.Table.Plugin)
+	opts, err := getSessionConfigStatic(ctx, d)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	}
 
 	// Get the ID of the spreadsheet
-	spreadsheetID := getSpreadsheetID(ctx, d)
+	spreadsheetID := getSpreadsheetIDStatic(ctx, d)
 
 	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData,startColumn,startRow),merges)"))
 

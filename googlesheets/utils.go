@@ -3,6 +3,7 @@ package googlesheets
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/mitchellh/go-homedir"
@@ -11,20 +12,48 @@ import (
 )
 
 // Returns the ID of the current working spreadsheet
-func getSpreadsheetID(_ context.Context, d *plugin.QueryData) string {
+func getSpreadsheetID(ctx context.Context, p *plugin.TableMapData) string {
 	spreadsheetCacheKey := "googlesheets.spreadsheetID"
-	if cachedData, ok := d.ConnectionManager.Cache.Get(spreadsheetCacheKey); ok {
+	if cachedData, ok := p.ConnectionCache.Get(ctx, spreadsheetCacheKey); ok {
 		return cachedData.(string)
 	}
 
-	googleSheetsConfig := GetConfig(d.Connection)
+	googleSheetsConfig := GetConfig(p.Connection)
 
 	var spreadsheetID string
 	if googleSheetsConfig.SpreadsheetId != nil {
 		spreadsheetID = *googleSheetsConfig.SpreadsheetId
 	}
 
-	d.ConnectionManager.Cache.Set(spreadsheetCacheKey, spreadsheetID)
+	err := p.ConnectionCache.Set(ctx, spreadsheetCacheKey, spreadsheetID)
+
+	if err != nil {
+		plugin.Logger(ctx).Error("getSpreadsheetID", "connection set error", err)
+		return err.Error()
+	}
+
+	return spreadsheetID
+}
+
+func getSpreadsheetIDStatic(ctx context.Context, p *plugin.QueryData) string {
+	spreadsheetCacheKey := "googlesheets.spreadsheetID"
+	if cachedData, ok := p.ConnectionCache.Get(ctx, spreadsheetCacheKey); ok {
+		return cachedData.(string)
+	}
+
+	googleSheetsConfig := GetConfig(p.Connection)
+
+	var spreadsheetID string
+	if googleSheetsConfig.SpreadsheetId != nil {
+		spreadsheetID = *googleSheetsConfig.SpreadsheetId
+	}
+
+	err := p.ConnectionCache.Set(ctx, spreadsheetCacheKey, spreadsheetID)
+
+	if err != nil {
+		plugin.Logger(ctx).Error("getSpreadsheetID", "connection set error", err)
+		return err.Error()
+	}
 
 	return spreadsheetID
 }
@@ -46,7 +75,7 @@ func pathOrContents(poc string) (string, error) {
 
 	// Check for valid file path
 	if _, err := os.Stat(path); err == nil {
-		contents, err := os.ReadFile(path)
+		contents, err := ioutil.ReadFile(path)
 		if err != nil {
 			return string(contents), err
 		}
