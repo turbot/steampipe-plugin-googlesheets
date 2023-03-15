@@ -3,7 +3,6 @@ package googlesheets
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/mitchellh/go-homedir"
@@ -75,7 +74,7 @@ func pathOrContents(poc string) (string, error) {
 
 	// Check for valid file path
 	if _, err := os.Stat(path); err == nil {
-		contents, err := ioutil.ReadFile(path)
+		contents, err := os.ReadFile(path)
 		if err != nil {
 			return string(contents), err
 		}
