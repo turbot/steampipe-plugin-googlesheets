@@ -167,6 +167,7 @@ func getSessionConfig(ctx context.Context, d *plugin.TableMapData) ([]option.Cli
 	return nil, nil
 }
 
+// retrieve session config credentials for static tables
 func getSessionConfigStatic(ctx context.Context, d *plugin.QueryData) ([]option.ClientOption, error) {
 	opts := []option.ClientOption{}
 

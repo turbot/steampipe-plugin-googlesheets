@@ -34,6 +34,7 @@ func getSpreadsheetID(ctx context.Context, p *plugin.TableMapData) string {
 	return spreadsheetID
 }
 
+// Returns the ID of the working spreadsheet for static tables
 func getSpreadsheetIDStatic(ctx context.Context, p *plugin.QueryData) string {
 	spreadsheetCacheKey := "googlesheets.spreadsheetID"
 	if cachedData, ok := p.ConnectionCache.Get(ctx, spreadsheetCacheKey); ok {
