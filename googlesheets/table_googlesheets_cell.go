@@ -7,9 +7,9 @@ import (
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/sheets/v4"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 type cellInfo = struct {
@@ -117,7 +117,7 @@ func tableGoogleSheetsCell(_ context.Context) *plugin.Table {
 
 func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
-	opts, err := getSessionConfig(ctx, d.Table.Plugin)
+	opts, err := getSessionConfigStatic(ctx, d)
 	if err != nil {
 		return nil, err
 	}
@@ -130,12 +130,12 @@ func listGoogleSheetCells(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 	}
 
 	// Get the ID of the spreadsheet
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetIDStatic(ctx, d)
 
 	resp := svc.Spreadsheets.Get(spreadsheetID).IncludeGridData(true).Fields(googleapi.Field("sheets(properties.title,data(rowData,startColumn,startRow),merges)"))
 
 	// Additional filters
-	quals := d.KeyColumnQuals
+	quals := d.EqualsQuals
 
 	/*
 		 * If `range` qual is defined, API will use that filter directly

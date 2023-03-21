@@ -10,11 +10,11 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
 // Returns headers of a sheet in given spreadsheet
-func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.ValueRange, error) {
+func getSpreadsheetHeaders(ctx context.Context, d *plugin.TableMapData, sheetNames []string) ([]*sheets.ValueRange, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -39,7 +39,7 @@ func getSpreadsheetHeaders(ctx context.Context, d *plugin.Plugin, sheetNames []s
 }
 
 // Returns all the sheets in a given spreadsheets
-func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
+func getSpreadsheets(ctx context.Context, d *plugin.TableMapData) ([]string, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -71,7 +71,7 @@ func getSpreadsheets(ctx context.Context, d *plugin.Plugin) ([]string, error) {
 }
 
 // Returns all the merge cells in a given sheet
-func getMergeCells(ctx context.Context, d *plugin.Plugin, sheetName string) ([]*sheets.GridRange, error) {
+func getMergeCells(ctx context.Context, d *plugin.TableMapData, sheetName string) ([]*sheets.GridRange, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -100,7 +100,7 @@ func getMergeCells(ctx context.Context, d *plugin.Plugin, sheetName string) ([]*
 }
 
 // Returns all the cells of a sheet in given spreadsheet
-func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []string) ([]*sheets.Sheet, error) {
+func getSpreadsheetData(ctx context.Context, d *plugin.TableMapData, sheetNames []string) ([]*sheets.Sheet, error) {
 	// To get config arguments from plugin config file
 	opts, err := getSessionConfig(ctx, d)
 	if err != nil {
@@ -128,7 +128,7 @@ func getSpreadsheetData(ctx context.Context, d *plugin.Plugin, sheetNames []stri
 	return data.Sheets, nil
 }
 
-func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOption, error) {
+func getSessionConfig(ctx context.Context, d *plugin.TableMapData) ([]option.ClientOption, error) {
 	opts := []option.ClientOption{}
 
 	// Get credential file path, and user to impersonate from config (if mentioned)
@@ -167,13 +167,53 @@ func getSessionConfig(ctx context.Context, d *plugin.Plugin) ([]option.ClientOpt
 	return nil, nil
 }
 
+// retrieve session config credentials for static tables
+func getSessionConfigStatic(ctx context.Context, d *plugin.QueryData) ([]option.ClientOption, error) {
+	opts := []option.ClientOption{}
+
+	// Get credential file path, and user to impersonate from config (if mentioned)
+	var credentialContent, tokenPath string
+	googleSheetsConfig := GetConfig(d.Connection)
+
+	// Return if no Spreadsheet ID provided
+	if googleSheetsConfig.SpreadsheetId == nil {
+		return nil, errors.New("spreadsheet_id must be configured")
+	}
+
+	if googleSheetsConfig.TokenPath != nil {
+		tokenPath = *googleSheetsConfig.TokenPath
+	}
+
+	if googleSheetsConfig.Credentials != nil {
+		credentialContent = *googleSheetsConfig.Credentials
+	}
+
+	// If credential path provided, use domain-wide delegation
+	if credentialContent != "" {
+		ts, err := getTokenSourceStatic(ctx, d)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, option.WithTokenSource(ts))
+		return opts, nil
+	}
+
+	// If token path provided, authenticate using OAuth 2.0
+	if tokenPath != "" {
+		opts = append(opts, option.WithCredentialsFile(tokenPath))
+		return opts, nil
+	}
+
+	return nil, nil
+}
+
 // Returns a JWT TokenSource using the configuration and the HTTP client from the provided context.
-func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, error) {
+func getTokenSource(ctx context.Context, d *plugin.TableMapData) (oauth2.TokenSource, error) {
 	// Note: based on https://developers.google.com/admin-sdk/directory/v1/guides/delegation#go
 
 	// have we already created and cached the token?
 	cacheKey := "googlesheets.token_source"
-	if ts, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+	if ts, ok := d.ConnectionCache.Get(ctx, cacheKey); ok {
 		return ts.(oauth2.TokenSource), nil
 	}
 
@@ -209,7 +249,63 @@ func getTokenSource(ctx context.Context, d *plugin.Plugin) (oauth2.TokenSource, 
 	ts := config.TokenSource(ctx)
 
 	// cache the token source
-	d.ConnectionManager.Cache.Set(cacheKey, ts)
+	err = d.ConnectionCache.Set(ctx, cacheKey, ts)
+
+	if err != nil {
+		plugin.Logger(ctx).Error("getTokenSource", "connection set error", err)
+		return nil, err
+	}
+
+	return ts, nil
+}
+
+func getTokenSourceStatic(ctx context.Context, d *plugin.QueryData) (oauth2.TokenSource, error) {
+	// Note: based on https://developers.google.com/admin-sdk/directory/v1/guides/delegation#go
+
+	// have we already created and cached the token?
+	cacheKey := "googlesheets.token_source"
+	if ts, ok := d.ConnectionCache.Get(ctx, cacheKey); ok {
+		return ts.(oauth2.TokenSource), nil
+	}
+
+	// Get credential file path, and user to impersonate from config (if mentioned)
+	var impersonateUser string
+	googleSheetsConfig := GetConfig(d.Connection)
+
+	// Read credential from JSON string, or from the given path
+	credentialContent, err := pathOrContents(*googleSheetsConfig.Credentials)
+	if err != nil {
+		return nil, err
+	}
+
+	if googleSheetsConfig.ImpersonatedUserEmail != nil {
+		impersonateUser = *googleSheetsConfig.ImpersonatedUserEmail
+	}
+
+	// Return error, since impersonation required to authenticate using domain-wide delegation
+	if impersonateUser == "" {
+		return nil, errors.New("impersonated_user_email must be configured")
+	}
+
+	// Authorize the request
+	config, err := google.JWTConfigFromJSON(
+		[]byte(credentialContent),
+		sheets.DriveReadonlyScope,
+	)
+	if err != nil {
+		return nil, err
+	}
+	config.Subject = impersonateUser
+
+	ts := config.TokenSource(ctx)
+
+	// cache the token source
+	err = d.ConnectionCache.Set(ctx, cacheKey, ts)
+
+	if err != nil {
+		plugin.Logger(ctx).Error("getTokenSource", "connection set error", err)
+		return nil, err
+	}
 
 	return ts, nil
 }

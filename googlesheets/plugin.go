@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/turbot/go-kit/helpers"
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 // Plugin creates this (googlesheets) plugin
@@ -29,7 +29,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 // Map of spreadsheet headers along with the sheet name
 var googleSpreadsheetHeadersMap = map[string][]string{}
 
-func PluginTables(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plugin.Table, error) {
 	// Initialize tables
 	tables := map[string]*plugin.Table{}
 

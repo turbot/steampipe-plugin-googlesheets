@@ -5,9 +5,9 @@ import (
 
 	"google.golang.org/api/drive/v3"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 //// TABLE DEFINITION
@@ -204,7 +204,7 @@ func tableGoogleSheetsSpreadsheet(_ context.Context) *plugin.Table {
 
 func listGoogleSheetSpreadsheet(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
-	opts, err := getSessionConfig(ctx, d.Table.Plugin)
+	opts, err := getSessionConfigStatic(ctx, d)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,7 @@ func listGoogleSheetSpreadsheet(ctx context.Context, d *plugin.QueryData, _ *plu
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetIDStatic(ctx, d)
 
 	resp, err := svc.Files.Get(spreadsheetID).Fields("*").Context(ctx).Do()
 	if err != nil {

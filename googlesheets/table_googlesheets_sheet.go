@@ -5,9 +5,9 @@ import (
 
 	"google.golang.org/api/sheets/v4"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 //// TABLE DEFINITION
@@ -161,7 +161,7 @@ func tableGoogleSheetsSheet(_ context.Context) *plugin.Table {
 
 func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
 	// Create client
-	opts, err := getSessionConfig(ctx, d.Table.Plugin)
+	opts, err := getSessionConfigStatic(ctx, d)
 	if err != nil {
 		return nil, err
 	}
@@ -173,13 +173,13 @@ func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 		return nil, err
 	}
 
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetIDStatic(ctx, d)
 
 	req := svc.Spreadsheets.Get(spreadsheetID)
 
 	// Additional filters
-	if d.KeyColumnQuals["title"] != nil {
-		req.Ranges(d.KeyColumnQuals["title"].GetStringValue())
+	if d.EqualsQuals["title"] != nil {
+		req.Ranges(d.EqualsQuals["title"].GetStringValue())
 	}
 
 	resp, err := req.Context(ctx).Do()
@@ -197,6 +197,6 @@ func listGoogleSheetSheets(ctx context.Context, d *plugin.QueryData, _ *plugin.H
 }
 
 func spreadsheetID(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
-	spreadsheetID := getSpreadsheetID(ctx, d.Table.Plugin)
+	spreadsheetID := getSpreadsheetIDStatic(ctx, d)
 	return spreadsheetID, nil
 }
