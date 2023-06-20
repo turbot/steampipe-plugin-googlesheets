@@ -1,3 +1,9 @@
+## v0.4.0 [2023-06-20]
+
+_Dependencies_
+
+- Recompiled plugin with [steampipe-plugin-sdk v5.5.0](https://github.com/turbot/steampipe-plugin-sdk/blob/v5.5.0/CHANGELOG.md#v550-2023-06-16) which significantly reduces API calls and boosts query performance, resulting in faster data retrieval. This update significantly lowers the plugin initialization time of dynamic plugins by avoiding recursing into child folders when not necessary. ([#29](https://github.com/turbot/steampipe-plugin-googlesheets/pull/29))
+
 ## v0.3.0 [2023-03-22]
 
 _Dependencies_
