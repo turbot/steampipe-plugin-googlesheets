@@ -4,8 +4,11 @@ connection "googlesheets" {
   # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
   # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
 
-  # If no sheets are specified, then all sheets will be retrieved
-  # sheets = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+  # If no sheets or sheet patterns have been specified, none of the sheets will be added to the table map.
+  # sheets = ["*"] # All sheets for a spreadsheet
+  # sheets = ["Student*", "Books*"] # All sheets start with Student or Books
+  # sheets = ["*Student*", "*Books*"] # All sheets contains Student or Books keywords
+  # sheets = ["Dashboard", "Students", "Books", "Marks", "Employees"] # Specific sheets
 
   # You may connect to Google Sheet using more than one option:
 
@@ -22,7 +25,7 @@ connection "googlesheets" {
   # impersonated_user_email = "username@domain.com"
 
   # 2. To authenticate using OAuth 2.0, specify a client secret file
-  # `token_path` - The path to a JSON credential file that contains Google application credentials. 
+  # `token_path` - The path to a JSON credential file that contains Google application credentials.
   # If `token_path` is not specified in a connection, credentials will be loaded from:
   #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
   #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)
