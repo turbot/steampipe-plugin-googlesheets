@@ -71,9 +71,6 @@ func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plug
 		}
 	}
 
-	plugin.Logger(ctx).Error("Available sheets ===>>", availableSheets)
-	plugin.Logger(ctx).Error("Valid sheets ===>>", validSheets)
-
 	// Get spreadsheet details
 	spreadsheetData, err := getSpreadsheetHeaders(ctx, p, validSheets)
 	if err != nil {
