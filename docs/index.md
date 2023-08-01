@@ -141,7 +141,7 @@ steampipe plugin install googlesheets
 
 | Item        | Description |
 | :---------- | :---------- |
-| APIs | 1. Go to the [Google API Console](https://console.cloud.google.com/apis/dashboard). <br/> 2. Select the project that contains your credentials. <br/> 3. Click `Enable APIs and Services`. <br/> 4. Enable both the `Google Drive API` and `Google Sheets API`. 
+| APIs | 1. Go to the [Google API Console](https://console.cloud.google.com/apis/dashboard). <br/> 2. Select the project that contains your credentials. <br/> 3. Click `Enable APIs and Services`. <br/> 4. Enable both the `Google Drive API` and `Google Sheets API`.
 | Credentials | 1. To use **OAuth client**, configure your [credentials](#authenticate-using-oauth-client).<br />2. To use **domain-wide delegation**, generate your [service account and credentials](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#create_the_service_account_and_credentials) and [delegate domain-wide authority to your service account](https://developers.google.com/admin-sdk/directory/v1/guides/delegation#delegate_domain-wide_authority_to_your_service_account). Use `https://www.googleapis.com/auth/drive.readonly` and `https://www.googleapis.com/auth/spreadsheets.readonly` OAuth 2.0 scopes. |
 | Radius      | Each connection represents a single Google spreadsheet. |
 | Resolution  | 1. Credentials from the JSON file specified by the `credentials` parameter in your Steampipe config.<br />2. Credentials from the JSON file specified by the `token_path` parameter in your Steampipe config.<br />3. Credentials from the default json file location (`~/.config/gcloud/application_default_credentials.json`). |
@@ -157,8 +157,17 @@ connection "googlesheets" {
   # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
   # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
 
-  # If no sheets are specified, then all sheets will be retrieved
-  # sheets = ["Dashboard", "Students", "Books", "Marks", "Employees"]
+  # List of sheets that will be created as dynamic tables.
+  # No dynamic tables will be created if this arg is empty or not set.
+  # Wildcard based searches are supported.
+
+  # For example:
+  #  - "*" matches all sheets
+  #  - "Student*" matches all sheets starting with "Student"
+  #  - "Books" matches a sheet named "Books"
+
+  # Defaults to all sheets
+  # sheets = ["*"]
 
   # You may connect to Google Sheet using more than one option:
 
@@ -175,7 +184,7 @@ connection "googlesheets" {
   # impersonated_user_email = "username@domain.com"
 
   # 2. To authenticate using OAuth 2.0, specify a client secret file
-  # `token_path` - The path to a JSON credential file that contains Google application credentials. 
+  # `token_path` - The path to a JSON credential file that contains Google application credentials.
   # If `token_path` is not specified in a connection, credentials will be loaded from:
   #   - The path specified in the `GOOGLE_APPLICATION_CREDENTIALS` environment variable, if set; otherwise
   #   - The standard location (`~/.config/gcloud/application_default_credentials.json`)

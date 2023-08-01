@@ -3,6 +3,7 @@ package googlesheets
 import (
 	"context"
 	"fmt"
+	"path"
 	"strings"
 
 	"github.com/turbot/go-kit/helpers"
@@ -49,11 +50,14 @@ func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plug
 		return tables, nil
 	}
 
-	// Return all valid sheets
+	// Retrieve all valid sheets
+	// If no sheets are specified in the config arg, no dynamic tables will be created
 	var validSheets []string
-	for _, i := range googleSheetsConfig.Sheets {
-		if helpers.StringSliceContains(availableSheets, i) {
-			validSheets = append(validSheets, i)
+	for _, pattern := range googleSheetsConfig.Sheets {
+		for _, sheet := range availableSheets {
+			if ok, _ := path.Match(pattern, sheet); ok {
+				validSheets = append(validSheets, sheet)
+			}
 		}
 	}
 
@@ -64,7 +68,7 @@ func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plug
 	}
 
 	// Create tablemap for all the available sheets
-	for _, sheetName := range googleSheetsConfig.Sheets {
+	for _, sheetName := range validSheets {
 		for _, data := range spreadsheetData {
 			// Return if empty sheet
 			if len(data.Values) == 0 {
