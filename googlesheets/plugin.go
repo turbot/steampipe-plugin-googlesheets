@@ -50,16 +50,8 @@ func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plug
 		return tables, nil
 	}
 
-	// List of sheets that will be created as dynamic tables.
-	// No dynamic tables will be created if this arg is empty or not set.
-	// Wildcard based searches are supported.
-
-	// For example:
-	// - "*" matches all sheets
-	// - "Student*" matches all sheets starting with "Student"
-	// - "Books" matches a sheet named "Books"
-	// Defaults to all sheets
-
+	// Retrieve all valid sheets
+	// If no sheets are specified in the config arg, no dynamic tables will be created
 	var validSheets []string
 	for _, pattern := range googleSheetsConfig.Sheets {
 		for _, sheet := range availableSheets {
