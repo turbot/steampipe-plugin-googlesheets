@@ -14,7 +14,7 @@ connection "googlesheets" {
   #  - "Books" matches a sheet named "Books"
 
   # Defaults to all sheets
-  sheets = ["*"]
+  # sheets = ["*"]
 
   # You may connect to Google Sheet using more than one option:
 
