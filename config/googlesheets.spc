@@ -7,8 +7,8 @@ connection "googlesheets" {
   # List of sheets that will be created as dynamic tables.
   # No dynamic tables will be created if this arg is empty or not set.
   # Wildcard based searches are supported.
-  
-    # For example:
+
+  # For example:
   #  - "*" matches all sheets
   #  - "Student*" matches all sheets starting with "Student"
   #  - "Books" matches a sheet named "Books"
