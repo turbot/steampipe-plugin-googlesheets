@@ -4,11 +4,17 @@ connection "googlesheets" {
   # The spreadsheet ID can be found in the spreadsheet's URL, e.g., https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4
   # spreadsheet_id = "11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju2AOF-ieb4"
 
-  # If no sheets or sheet patterns have been specified, none of the sheets will be added to the table map.
-  # sheets = ["*"] # All sheets for a spreadsheet
-  # sheets = ["Student*", "Books*"] # All sheets start with Student or Books
-  # sheets = ["*Student*", "*Books*"] # All sheets contains Student or Books keywords
-  # sheets = ["Dashboard", "Students", "Books", "Marks", "Employees"] # Specific sheets
+  # List of sheets that will be created as dynamic tables.
+  # No dynamic tables will be created if this arg is empty or not set.
+  # Wildcard based searches are supported.
+  
+    # For example:
+  #  - "*" matches all sheets
+  #  - "Student*" matches all sheets starting with "Student"
+  #  - "Books" matches a sheet named "Books"
+
+  # Defaults to all sheets
+  sheets = ["*"]
 
   # You may connect to Google Sheet using more than one option:
 
