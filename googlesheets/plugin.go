@@ -50,18 +50,8 @@ func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plug
 		return tables, nil
 	}
 
-	// Retrieve all valid sheets.
-	// If no sheet is specified in the connection config and Steampipe is started, no table map will be added for any of the sheets.
-
-	// Wildcard:
-	//
-	// sheets = ["*"]
-	// Table mapping will be performed for all available sheets.
-
-	// Partial wildcard:
-	//
-	// sheets = ["Student*", "Work*"]
-	// Table mapping will be performed for the available sheets matching the patterns provided in the SPC file.
+	// Retrieve all valid sheets
+	// If no sheets are specified in the config arg, no dynamic tables will be created
 	var validSheets []string
 	for _, pattern := range googleSheetsConfig.Sheets {
 		for _, sheet := range availableSheets {
