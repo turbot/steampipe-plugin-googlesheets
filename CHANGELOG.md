@@ -2,7 +2,7 @@
 
 _Enhancements_
 
-- The `sheets` config argument now allows for wildcard-based searches of sheets, enabling the creation of dynamic tables as needed. By default no dynamic tables will be created if `sheets` argument is empty or not set.  ([#32](https://github.com/turbot/steampipe-plugin-googlesheets/pull/32))
+- The `sheets` config argument now allows for wildcard-based searches of sheets, enabling the creation of dynamic tables as needed. By default, no dynamic tables will be created if `sheets` argument is empty or not set.  ([#32](https://github.com/turbot/steampipe-plugin-googlesheets/pull/32))
 
 ## v0.4.0 [2023-06-20]
 
