@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/turbot/go-kit v0.6.0
+	github.com/turbot/go-kit v0.7.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.5.0
 	golang.org/x/oauth2 v0.1.0
 	google.golang.org/api v0.100.0
