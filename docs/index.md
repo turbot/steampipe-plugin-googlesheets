@@ -8,6 +8,7 @@ short_name: "googlesheets"
 description: "Steampipe plugin for query data from Google Sheets."
 og_description: "Query Google Sheets with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/googlesheets-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Google Sheets + Steampipe
