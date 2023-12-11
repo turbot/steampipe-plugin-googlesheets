@@ -200,11 +200,6 @@ spreadsheet, which is a public spreadsheet maintained by the Steampipe team.
 All of our examples in this document, and in our table documents, are based on
 this sample spreadsheet.
 
-## Get involved
-
-- Open source: https://github.com/turbot/steampipe-plugin-googlesheets
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
-
 ## Advanced configuration options
 
 ### Authenticate using OAuth client
