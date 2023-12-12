@@ -1,4 +1,15 @@
-# Table: {sheet_name}
+---
+title: "Steampipe Table: {sheet_name} - Query Google Sheets using SQL"
+description: "Allows users to query data within Google Sheets, providing insights into cell values, formulas, and formatting. It enables users to analyze and manipulate spreadsheet data using SQL."
+---
+
+# Table: {sheet_name} - Query Google Sheets using SQL
+
+Google Sheets is a web-based spreadsheet program that is part of Google's office software suite within Google Drive. Users can create, edit, and collaborate on spreadsheets online while also being able to preserve various data in cells, including text, numerical values, dates, and formulas. It provides features like real-time editing, chat, and commenting, making it a powerful tool for teams to collaborate and share data.
+
+## Table Usage Guide
+
+The `{sheet_name}` table provides insights into the data stored in Google Sheets. As a data analyst, you can explore cell-specific details through this table, including text, numerical values, dates, and formulas. Utilize it to uncover information about cells, such as their values, the formulas used in them, and their formatting, enabling you to analyze and manipulate spreadsheet data using SQL. 
 
 Query cell data from sheets in a Google Sheets spreadsheet in CSV format. A
 table is automatically created to represent each sheet mentioned in the
@@ -27,7 +38,14 @@ This plugin will create 4 tables:
 
 For the tables that were created, these can be queried directly:
 
-```sql
+```sql+postgres
+select
+  *
+from
+  "Students";
+```
+
+```sql+sqlite
 select
   *
 from
@@ -84,10 +102,18 @@ To get details for a specific table, inspect it by name:
 ```
 
 ### Query a sheet
-
+Explore the complete data of all students. This can be useful for understanding the overall student demographics or for conducting broad analyses.
 Given the sheet `Students`, the query requires identifier quotes:
 
-```sql
+
+```sql+postgres
+select
+  *
+from
+  "Students";
+```
+
+```sql+sqlite
 select
   *
 from
@@ -95,13 +121,22 @@ from
 ```
 
 ### Query specific columns
-
+Explore which students are studying under which major, providing a quick overview of the student body's academic interests.
 Columns are always in text form when read from Google Sheets. The column names
 come from the first row of the sheet.
 
 If your column names are complex, use identifier quotes:
 
-```sql
+
+```sql+postgres
+select
+  "Student Name",
+  "Major"
+from
+  "Students";
+```
+
+```sql+sqlite
 select
   "Student Name",
   "Major"
@@ -110,10 +145,11 @@ from
 ```
 
 ### Casting column data for analysis
-
+The query is designed to analyze and transform book data for clearer understanding and further processing. It can be used to convert raw data into a more readable format, such as changing the issue date into a timestamp and verifying the authenticity of the books.
 Text columns can be easily cast to other types:
 
-```sql
+
+```sql+postgres
 select
   "Name" as book_name,
   "Author" as author,
@@ -122,6 +158,19 @@ select
     when "Issue Date" <> '' then "Issue Date"::timestamptz
   end as issued_at,
   "Verified"::boolean as verified
+from
+  "Books";
+```
+
+```sql+sqlite
+select
+  "Name" as book_name,
+  "Author" as author,
+  "Issued By" as issued_by,
+  case
+    when "Issue Date" <> '' then datetime("Issue Date")
+  end as issued_at,
+  "Verified" = 'true' as verified
 from
   "Books";
 ```

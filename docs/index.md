@@ -8,13 +8,14 @@ short_name: "googlesheets"
 description: "Steampipe plugin for query data from Google Sheets."
 og_description: "Query Google Sheets with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/googlesheets-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Google Sheets + Steampipe
 
 [Google Sheets](https://www.google.com/sheets/about) is an online spreadsheet app that lets you create and format spreadsheets and work with other people.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 Query all the sheets in your spreadsheet:
 
@@ -198,11 +199,6 @@ Data](https://docs.google.com/spreadsheets/d/11iXfj-RHpFsil7_hNK-oQjCqmBLlDfCvju
 spreadsheet, which is a public spreadsheet maintained by the Steampipe team.
 All of our examples in this document, and in our table documents, are based on
 this sample spreadsheet.
-
-## Get involved
-
-- Open source: https://github.com/turbot/steampipe-plugin-googlesheets
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
 
 ## Advanced configuration options
 
