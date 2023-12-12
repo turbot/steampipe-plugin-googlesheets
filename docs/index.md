@@ -15,7 +15,7 @@ engines: ["steampipe", "sqlite", "postgres", "export"]
 
 [Google Sheets](https://www.google.com/sheets/about) is an online spreadsheet app that lets you create and format spreadsheets and work with other people.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 Query all the sheets in your spreadsheet:
 
