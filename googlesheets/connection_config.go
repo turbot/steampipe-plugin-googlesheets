@@ -9,7 +9,7 @@ type googleSheetsConfig struct {
 	ImpersonatedUserEmail *string  `hcl:"impersonated_user_email"`
 	TokenPath             *string  `hcl:"token_path"`
 	SpreadsheetId         *string  `hcl:"spreadsheet_id"`
-	Sheets                []string `hcl:"sheets"`
+	Sheets                []string `hcl:"sheets,optional"`
 }
 
 func ConfigInstance() interface{} {
