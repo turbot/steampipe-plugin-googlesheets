@@ -6,7 +6,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/turbot/go-kit v0.9.0-rc.1
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.8.0
-	golang.org/x/oauth2 v0.11.0
+	golang.org/x/oauth2 v0.19.0
 	google.golang.org/api v0.126.0
 )
 
