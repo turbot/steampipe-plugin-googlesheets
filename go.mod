@@ -6,14 +6,13 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/turbot/go-kit v0.9.0-rc.1
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.8.0
-	golang.org/x/oauth2 v0.11.0
+	golang.org/x/oauth2 v0.20.0
 	google.golang.org/api v0.126.0
 )
 
 require (
 	cloud.google.com/go v0.110.7 // indirect
-	cloud.google.com/go/compute v1.23.0 // indirect
-	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	cloud.google.com/go/iam v1.1.1 // indirect
 	cloud.google.com/go/storage v1.30.1 // indirect
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
