@@ -19,6 +19,12 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
 		},
+		ConnectionKeyColumns: []plugin.ConnectionKeyColumn{
+			{
+				Name:    "spreadsheet_id",
+				Hydrate: spreadsheetID,
+			},
+		},
 		DefaultTransform: transform.FromGo().NullIfZero(),
 		SchemaMode:       plugin.SchemaModeDynamic,
 		TableMapFunc:     PluginTables,

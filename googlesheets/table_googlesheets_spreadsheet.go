@@ -196,6 +196,13 @@ func tableGoogleSheetsSpreadsheet(_ context.Context) *plugin.Table {
 				Description: "The list of spaces which contain the spreadsheet.",
 				Type:        proto.ColumnType_JSON,
 			},
+			{
+				Name:        "spreadsheet_id",
+				Description: "The ID of the spreadsheet.",
+				Type:        proto.ColumnType_STRING,
+				Hydrate:     spreadsheetID,
+				Transform:   transform.FromValue(),
+			},
 		},
 	}
 }
