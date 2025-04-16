@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"path"
+	"slices"
 	"strings"
 
-	"github.com/turbot/go-kit/helpers"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
@@ -111,7 +111,7 @@ func PluginTables(ctx context.Context, p *plugin.TableMapData) (map[string]*plug
 						columnName := intToLetters(idx + 1) // since index in for is zero-based
 						spreadsheetHeaders = append(spreadsheetHeaders, columnName)
 					} else {
-						if helpers.StringSliceContains(spreadsheetHeaders, i.(string)) {
+						if slices.Contains(spreadsheetHeaders, i.(string)) {
 							spreadsheetHeaders = append(spreadsheetHeaders, fmt.Sprintf("%s [%s]", i.(string), intToLetters(idx+1)))
 						} else {
 							spreadsheetHeaders = append(spreadsheetHeaders, i.(string))
