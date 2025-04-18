@@ -1,3 +1,9 @@
+## v1.1.1 [2025-04-18]
+
+_Bug fixes_
+
+- Fixed Linux AMD64 plugin build failures for `Postgres 14 FDW`, `Postgres 15 FDW`, and `SQLite Extension` by upgrading GitHub Actions runners from `ubuntu-20.04` to `ubuntu-22.04`.
+
 ## v1.1.0 [2025-04-17]
 
 _Dependencies_
