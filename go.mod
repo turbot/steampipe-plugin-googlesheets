@@ -6,7 +6,6 @@ toolchain go1.23.2
 
 require (
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/turbot/go-kit v1.1.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.11.5
 	golang.org/x/oauth2 v0.21.0
 	google.golang.org/api v0.171.0
@@ -78,6 +77,7 @@ require (
 	github.com/sethvargo/go-retry v0.2.4 // indirect
 	github.com/stevenle/topsort v0.2.0 // indirect
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
+	github.com/turbot/go-kit v1.2.0 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
