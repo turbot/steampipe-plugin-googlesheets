@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.14.0
-	golang.org/x/oauth2 v0.27.0
+	golang.org/x/oauth2 v0.36.0
 	google.golang.org/api v0.171.0
 )
 
