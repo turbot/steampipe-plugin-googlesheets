@@ -10,7 +10,7 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
 )
 
 // Returns headers of a sheet in given spreadsheet
@@ -160,7 +160,8 @@ func getSessionConfig(ctx context.Context, d *plugin.TableMapData) ([]option.Cli
 
 	// If token path provided, authenticate using OAuth 2.0
 	if tokenPath != "" {
-		opts = append(opts, option.WithCredentialsFile(tokenPath))
+		// token_path is operator-supplied config and may hold any credential type, so the type must stay auto-detected
+		opts = append(opts, option.WithCredentialsFile(tokenPath)) //nolint:staticcheck
 		return opts, nil
 	}
 
@@ -200,7 +201,8 @@ func getSessionConfigStatic(ctx context.Context, d *plugin.QueryData) ([]option.
 
 	// If token path provided, authenticate using OAuth 2.0
 	if tokenPath != "" {
-		opts = append(opts, option.WithCredentialsFile(tokenPath))
+		// token_path is operator-supplied config and may hold any credential type, so the type must stay auto-detected
+		opts = append(opts, option.WithCredentialsFile(tokenPath)) //nolint:staticcheck
 		return opts, nil
 	}
 
